@@ -41,10 +41,11 @@ class PostDTO_CreateTest {
     }
 
     private static List<PostDTO.Create> generatePostDTOCreateForValidate() {
+        PostDTO.Create.CreateBuilder createBuilder = PostDTO.Create.builder().title("TITLE").password("PASSWORD").contents("CONTNTES");
         return Arrays.asList(
-                PostDTO.Create.builder().title("").password("PASSWORD").contents("CONTENTS").build(),
-                PostDTO.Create.builder().title("TITLE").password("").contents("CONTENTS").build(),
-                PostDTO.Create.builder().title("TITLE").password("PASSWORD").contents("").build()
+                createBuilder.title("").build(),
+                createBuilder.password("").build(),
+                createBuilder.contents("").build()
         );
     }
 }
