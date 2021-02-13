@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
-@Setter
 public class Post {
     private Post(){}
 
