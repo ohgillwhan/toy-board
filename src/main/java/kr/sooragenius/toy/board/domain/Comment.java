@@ -26,4 +26,8 @@ public class Comment {
     public void addChild(Comment childComment) {
         children.add(childComment);
     }
+
+    public void update(CommentDTO.Update update) {
+        this.contents = update.getContents();
+    }
 }

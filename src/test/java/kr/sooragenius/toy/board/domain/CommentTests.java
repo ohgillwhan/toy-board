@@ -47,4 +47,19 @@ public class CommentTests {
         assertThat(storedChild)
                 .isEqualTo(childComment);
     }
+    @Test
+    public void 수정을_통해서는_내용만_변경이_가능하다() {
+        // given
+        CommentDTO.Create create = CommentDTO.Create.builder().contents("Contents").password("PASSWORD").build();
+        Comment comment = Comment.create(create);
+        CommentDTO.Update update = CommentDTO.Update.builder().contents("Update").build();
+
+        // when
+        comment.update(update);
+
+        // then
+        assertThat(comment.getContents()).isEqualTo(update.getContents());
+        assertThat(comment.getPassword()).isEqualTo(create.getPassword());
+
+    }
 }

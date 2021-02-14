@@ -12,4 +12,10 @@ public class CommentDTO {
         private String contents;
         private String password;
     }
+
+    @Data
+    @NoArgsConstructor @AllArgsConstructor @Builder
+    public static class Update {
+        private String contents;
+    }
 }
