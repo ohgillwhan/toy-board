@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class Post {
     private Post(){}
@@ -14,6 +17,8 @@ public class Post {
     private String contents;
     private String password;
     private int hits = 0;
+    private List<PostFile> files = new ArrayList<>();
+
     public void view() {
         hits++;
     }
@@ -31,4 +36,7 @@ public class Post {
         return post;
     }
 
+    public void addFile(PostFile postFile) {
+        files.add(postFile);
+    }
 }
