@@ -52,4 +52,30 @@ public class PostTests {
         assertThat(post.getPassword())
                 .isEqualTo(password);
     }
+
+    @Test
+    public void 업데이트를_통해서_내용과_제목만_변경이_되어야_한다() {
+        // given
+        PostDTO.Create create = PostDTO.Create.builder()
+                .title("TITLE")
+                .contents("CONTENTS")
+                .password("PASSWORD").build();
+        int hits = 1000;
+        Post post = Post.create(create);
+        ReflectionTestUtils.setField(post, "hits", hits);
+
+        PostDTO.Update update = PostDTO.Update.builder()
+                .title("UPDATE_TITLE")
+                .contents("UPDATE_CONTENTS")
+                .build();
+        // when
+        post.update(update);
+
+        // then
+        assertThat(post.getTitle()).isEqualTo(update.getTitle());
+        assertThat(post.getContents()).isEqualTo(update.getContents());
+
+        assertThat(post.getHits()).isEqualTo(hits);
+        assertThat(post.getPassword()).isEqualTo(create.getPassword());
+    }
 }

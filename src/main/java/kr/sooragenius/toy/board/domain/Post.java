@@ -16,6 +16,7 @@ public class Post {
     private String title;
     private String contents;
     private String password;
+
     private int hits = 0;
     private List<PostFile> files = new ArrayList<>();
     private List<Comment> comments = new ArrayList<>();
@@ -43,5 +44,10 @@ public class Post {
 
     public void addComments(Comment comment) {
         comments.add(comment);
+    }
+
+    public void update(PostDTO.Update update) {
+        this.title = update.getTitle();
+        this.contents = update.getContents();
     }
 }

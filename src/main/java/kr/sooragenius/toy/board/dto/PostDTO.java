@@ -19,4 +19,14 @@ public class PostDTO {
         @NotEmpty
         private String password;
     }
+
+    @Data
+    @NoArgsConstructor @Builder
+    @AllArgsConstructor
+    public static class Update {
+        @NotEmpty
+        private String title;
+        @NotEmpty
+        private String contents;
+    }
 }
