@@ -18,6 +18,7 @@ public class Post {
     private String password;
     private int hits = 0;
     private List<PostFile> files = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public void view() {
         hits++;
@@ -38,5 +39,9 @@ public class Post {
 
     public void addFile(PostFile postFile) {
         files.add(postFile);
+    }
+
+    public void addComments(Comment comment) {
+        comments.add(comment);
     }
 }

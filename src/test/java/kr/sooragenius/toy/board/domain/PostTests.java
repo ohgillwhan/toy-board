@@ -52,25 +52,4 @@ public class PostTests {
         assertThat(post.getPassword())
                 .isEqualTo(password);
     }
-
-    @Test
-    public void 첨부파일은_여러개가_등록이_될_수_있다() {
-        // given
-        PostDTO.Create create = new PostDTO.Create();
-        create.setPassword("");
-        Post post = Post.create(create);
-
-        List<PostFile> postFiles = Arrays.asList(
-                PostFile.create(new PostFileDTO.Create("File1", "File1")),
-                PostFile.create(new PostFileDTO.Create("File2", "File2")),
-                PostFile.create(new PostFileDTO.Create("File3", "File3"))
-        );
-
-        // when
-        for(PostFile postFile : postFiles) {
-            post.addFile(postFile);
-        }
-        // then
-        assertThat(post.getFiles().size()).isEqualTo(postFiles.size());
-    }
 }
