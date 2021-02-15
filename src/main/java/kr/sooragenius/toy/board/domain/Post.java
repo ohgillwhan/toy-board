@@ -6,19 +6,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Entity
 public class Post {
     private Post(){}
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String title;
     private String contents;
     private String password;
 
     private int hits = 0;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<PostFile> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<Comment> comments = new ArrayList<>();
 
     public void view() {
@@ -40,10 +48,12 @@ public class Post {
 
     public void addFile(PostFile postFile) {
         files.add(postFile);
+        postFile.setPost(this);
     }
 
     public void addComments(Comment comment) {
         comments.add(comment);
+        comment.setPost(this);
     }
 
     public void update(PostDTO.Update update) {
