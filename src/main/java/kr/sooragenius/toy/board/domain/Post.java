@@ -15,6 +15,7 @@ import java.util.List;
 public class Post {
     private Post(){}
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "POST_ID")
     private Long id;
 
     private String title;
@@ -25,9 +26,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<PostFile> files = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
-    private List<Comment> comments = new ArrayList<>();
 
     public void view() {
         hits++;
@@ -49,11 +47,6 @@ public class Post {
     public void addFile(PostFile postFile) {
         files.add(postFile);
         postFile.setPost(this);
-    }
-
-    public void addComments(Comment comment) {
-        comments.add(comment);
-        comment.setPost(this);
     }
 
     public void update(PostDTO.Update update) {

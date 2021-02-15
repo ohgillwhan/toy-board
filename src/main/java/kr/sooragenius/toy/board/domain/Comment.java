@@ -21,15 +21,16 @@ public class Comment {
     private String contents;
     private String password;
     @ManyToOne
-    @Setter(AccessLevel.PROTECTED)
+    @JoinColumn(name = "POST_ID", referencedColumnName = "POST_ID")
     private Post post;
     @Transient
     private List<Comment> children = new ArrayList<>();
 
-    public static Comment create(CommentDTO.Create create) {
+    public static Comment create(CommentDTO.Create create, Post post) {
         Comment comment = new Comment();
         comment.contents = create.getContents();
         comment.password = create.getPassword();
+        comment.post = post;
 
         return comment;
     }

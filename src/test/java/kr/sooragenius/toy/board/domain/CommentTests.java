@@ -12,18 +12,19 @@ public class CommentTests {
         // given
         Post post = Post.create(PostDTO.Create.builder().build());
         CommentDTO.Create build = CommentDTO.Create.builder().contents("Contents").password("Password").build();
-        Comment comment = Comment.create(build);
+
         // when
-        post.addComments(comment);
+        Comment comment = Comment.create(build, post);
         // then
-        assertThat(post.getComments().size()).isEqualTo(1);
+        assertThat(comment.getPost()).isEqualTo(post);
     }
     @Test
     public void 비밀번호는_한번_설정하면은_변경이_불가능하다() {
         // given
+        Post post = Post.create(PostDTO.Create.builder().build());
         CommentDTO.Create build = CommentDTO.Create.builder().contents("Contents").password("Password").build();
         // when
-        Comment comment = Comment.create(build);
+        Comment comment = Comment.create(build, post);
         // then
         assertThat(comment.getContents()).isEqualTo(build.getContents());
         assertThat(comment.getPassword()).isEqualTo(build.getPassword());
@@ -31,11 +32,12 @@ public class CommentTests {
     @Test
     public void 코멘트_밑에_코멘트가_작성이_가능하다() {
         // given
+        Post post = Post.create(PostDTO.Create.builder().build());
         CommentDTO.Create parentCommentCreateDTO = CommentDTO.Create.builder().contents("Parents").password("Parents").build();
         CommentDTO.Create childCommentCreateDTO = CommentDTO.Create.builder().contents("Child").password("Child").build();
 
-        Comment parentComment = Comment.create(parentCommentCreateDTO);
-        Comment childComment = Comment.create(childCommentCreateDTO);
+        Comment parentComment = Comment.create(parentCommentCreateDTO, post);
+        Comment childComment = Comment.create(childCommentCreateDTO, post);
         // when
         parentComment.addChild(childComment);
         // then
@@ -50,8 +52,9 @@ public class CommentTests {
     @Test
     public void 수정을_통해서는_내용만_변경이_가능하다() {
         // given
+        Post post = Post.create(PostDTO.Create.builder().build());
         CommentDTO.Create create = CommentDTO.Create.builder().contents("Contents").password("PASSWORD").build();
-        Comment comment = Comment.create(create);
+        Comment comment = Comment.create(create, post);
         CommentDTO.Update update = CommentDTO.Update.builder().contents("Update").build();
 
         // when
