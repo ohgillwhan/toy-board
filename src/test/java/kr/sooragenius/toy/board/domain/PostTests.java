@@ -19,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PostTests {
 
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
     @ParameterizedTest
     @ValueSource(ints = {1,5,10})
     @DisplayName("조회를하면 조회수가 늘어나야 한다.")

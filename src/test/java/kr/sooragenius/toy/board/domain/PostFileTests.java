@@ -3,6 +3,7 @@ package kr.sooragenius.toy.board.domain;
 import kr.sooragenius.toy.board.dto.PostDTO;
 import kr.sooragenius.toy.board.dto.PostFileDTO;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
