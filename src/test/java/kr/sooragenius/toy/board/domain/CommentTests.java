@@ -41,17 +41,10 @@ public class CommentTests {
         CommentDTO.Create childCommentCreateDTO = CommentDTO.Create.builder().contents("Child").password("Child").build();
 
         Comment parentComment = Comment.create(parentCommentCreateDTO, post);
-        Comment childComment = Comment.create(childCommentCreateDTO, post);
         // when
-        parentComment.addChild(childComment);
+        Comment childComment = Comment.create(childCommentCreateDTO, post, parentComment);
         // then
-
-        assertThat(parentComment.getChildren().size())
-                .isEqualTo(1);
-
-        Comment storedChild = parentComment.getChildren().get(0);
-        assertThat(storedChild)
-                .isEqualTo(childComment);
+        assertThat(childComment.getParent()).isEqualTo(parentComment);
     }
     @Test
     public void 수정을_통해서는_내용만_변경이_가능하다() {
