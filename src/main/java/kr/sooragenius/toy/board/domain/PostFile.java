@@ -13,10 +13,12 @@ public class PostFile {
     private PostFile() {}
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "FILE_ID")
     private long id;
     private String originalName;
 
     @ManyToOne
+    @JoinColumn(name = "POST_ID", referencedColumnName = "POST_ID")
     private Post post;
 
     public static PostFile create(PostFileDTO.Create create, Post post) {
