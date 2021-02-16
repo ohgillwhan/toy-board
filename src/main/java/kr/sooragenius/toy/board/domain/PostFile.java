@@ -17,12 +17,12 @@ public class PostFile {
     private String originalName;
 
     @ManyToOne
-    @Setter(AccessLevel.PROTECTED)
     private Post post;
 
-    public static PostFile create(PostFileDTO.Create create) {
+    public static PostFile create(PostFileDTO.Create create, Post post) {
         PostFile postFile = new PostFile();
         postFile.originalName = create.getOriginalName();
+        postFile.post = post;
 
         return postFile;
     }

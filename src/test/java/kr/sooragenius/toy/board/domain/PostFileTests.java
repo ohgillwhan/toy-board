@@ -2,6 +2,7 @@ package kr.sooragenius.toy.board.domain;
 
 import kr.sooragenius.toy.board.dto.PostDTO;
 import kr.sooragenius.toy.board.dto.PostFileDTO;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -11,6 +12,15 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PostFileTests {
+    static Post post = null;
+    @BeforeAll
+    static void setUp() {
+
+        // given
+        PostDTO.Create create = new PostDTO.Create();
+        create.setPassword("");
+        post = Post.create(create);
+    }
     @Test
     public void 첨부파일은_확장자를_가져올_수_있어야_한다() {
         // given
@@ -18,7 +28,7 @@ public class PostFileTests {
         String storedName = "hangle.pdf";
         PostFileDTO.Create create = new PostFileDTO.Create(fileName, storedName);
         // when
-        PostFile postFile = PostFile.create(create);
+        PostFile postFile = PostFile.create(create, post);
         // then
         assertThat(postFile.getExtension()).isEqualTo("pdf");
     }
@@ -29,7 +39,7 @@ public class PostFileTests {
         String storedName = "hangle";
         PostFileDTO.Create create = new PostFileDTO.Create(fileName, storedName);
         // when
-        PostFile postFile = PostFile.create(create);
+        PostFile postFile = PostFile.create(create, post);
         // then
         assertThat(postFile.getExtension()).isEqualTo("");
     }
@@ -37,22 +47,16 @@ public class PostFileTests {
 
     @Test
     public void 첨부파일은_여러개가_등록이_될_수_있다() {
-        // given
-        PostDTO.Create create = new PostDTO.Create();
-        create.setPassword("");
-        Post post = Post.create(create);
-
-        List<PostFile> postFiles = Arrays.asList(
-                PostFile.create(new PostFileDTO.Create("File1", "File1")),
-                PostFile.create(new PostFileDTO.Create("File2", "File2")),
-                PostFile.create(new PostFileDTO.Create("File3", "File3"))
-        );
 
         // when
-        for(PostFile postFile : postFiles) {
-            post.addFile(postFile);
-        }
+        List<PostFile> postFiles = Arrays.asList(
+                PostFile.create(new PostFileDTO.Create("File1", "File1"), post),
+                PostFile.create(new PostFileDTO.Create("File2", "File2"), post),
+                PostFile.create(new PostFileDTO.Create("File3", "File3"), post)
+        );
+
         // then
-        assertThat(post.getFiles().size()).isEqualTo(postFiles.size());
+        assertThat(postFiles)
+                .allMatch((item) -> item.getPost() == post);
     }
 }

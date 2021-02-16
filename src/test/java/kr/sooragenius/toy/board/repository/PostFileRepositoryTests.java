@@ -1,12 +1,9 @@
 package kr.sooragenius.toy.board.repository;
 
-import kr.sooragenius.toy.board.domain.Comment;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.domain.PostFile;
-import kr.sooragenius.toy.board.dto.CommentDTO;
 import kr.sooragenius.toy.board.dto.PostDTO;
 import kr.sooragenius.toy.board.dto.PostFileDTO;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +14,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,13 +23,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class PostRepositoryTests {
+public class PostFileRepositoryTests {
 
     @Container
     private static final MySQLContainer container = new MySQLContainer();
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private PostFileRepository postFileRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -57,19 +55,26 @@ public class PostRepositoryTests {
         assertThat(container.isRunning()).isTrue();
     }
 
+
     @Test
     @Transactional
-    public void 게시글_등록() {
-        // when
+    public void 첨부파일_등록() {
+        // given
         Post save = postRepository.save(post);
+        List<PostFile> postFiles = Arrays.asList(
+                PostFile.create(new PostFileDTO.Create("File1", "File1"), save),
+                PostFile.create(new PostFileDTO.Create("File2", "File2"), save),
+                PostFile.create(new PostFileDTO.Create("File3", "File3"), save)
+        );
+
+        // when
+        for(PostFile postFile : postFiles) {
+            postFileRepository.save(postFile);
+        }
         flushAndClear();
         // then
-        post = postRepository.findById(save.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        assertThat(post.getId()).isGreaterThan(0);
-        assertThat(post.getTitle()).isEqualTo(create.getTitle());
-        assertThat(post.getContents()).isEqualTo(create.getContents());
-        assertThat(post.getPassword()).isEqualTo(create.getPassword());
+        assertThat(postFileRepository.findByPostId(save.getId()).size()).isEqualTo(postFiles.size());
     }
 
 

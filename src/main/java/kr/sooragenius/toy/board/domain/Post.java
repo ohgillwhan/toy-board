@@ -23,10 +23,6 @@ public class Post {
     private String password;
 
     private int hits = 0;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
-    private List<PostFile> files = new ArrayList<>();
-
     public void view() {
         hits++;
     }
@@ -42,11 +38,6 @@ public class Post {
         post.password = create.getPassword();
 
         return post;
-    }
-
-    public void addFile(PostFile postFile) {
-        files.add(postFile);
-        postFile.setPost(this);
     }
 
     public void update(PostDTO.Update update) {
