@@ -1,19 +1,11 @@
 package kr.sooragenius.toy.board.domain;
 
-import kr.sooragenius.toy.board.domain.Post;
-import kr.sooragenius.toy.board.dto.PostDTO;
-import kr.sooragenius.toy.board.dto.PostFileDTO;
-import org.junit.jupiter.api.BeforeAll;
+import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +16,7 @@ public class PostTests {
     @DisplayName("조회를하면 조회수가 늘어나야 한다.")
     public void 조회를하면_조회수가_늘어나야_한다(int loop) {
         // given
-        PostDTO.Create create = new PostDTO.Create();
+        PostRequestDTO.Create create = new PostRequestDTO.Create();
         create.setPassword("");
         Post post = Post.create(create);
         // when
@@ -40,7 +32,7 @@ public class PostTests {
     public void 비밀번호는_생성시_한번만_설정이_가능() {
         // given
         String password = "sooragenius";
-        PostDTO.Create create = new PostDTO.Create();
+        PostRequestDTO.Create create = new PostRequestDTO.Create();
         create.setPassword(password);
 
         // when
@@ -54,7 +46,7 @@ public class PostTests {
     @Test
     public void 업데이트를_통해서_내용과_제목만_변경이_되어야_한다() {
         // given
-        PostDTO.Create create = PostDTO.Create.builder()
+        PostRequestDTO.Create create = PostRequestDTO.Create.builder()
                 .title("TITLE")
                 .contents("CONTENTS")
                 .password("PASSWORD").build();
@@ -62,7 +54,7 @@ public class PostTests {
         Post post = Post.create(create);
         ReflectionTestUtils.setField(post, "hits", hits);
 
-        PostDTO.Update update = PostDTO.Update.builder()
+        PostRequestDTO.Update update = PostRequestDTO.Update.builder()
                 .title("UPDATE_TITLE")
                 .contents("UPDATE_CONTENTS")
                 .build();

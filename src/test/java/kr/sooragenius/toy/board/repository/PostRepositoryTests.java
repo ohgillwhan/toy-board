@@ -1,12 +1,7 @@
 package kr.sooragenius.toy.board.repository;
 
-import kr.sooragenius.toy.board.domain.Comment;
 import kr.sooragenius.toy.board.domain.Post;
-import kr.sooragenius.toy.board.domain.PostFile;
-import kr.sooragenius.toy.board.dto.CommentDTO;
-import kr.sooragenius.toy.board.dto.PostDTO;
-import kr.sooragenius.toy.board.dto.PostFileDTO;
-import org.junit.jupiter.api.BeforeAll;
+import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +12,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,11 +30,11 @@ public class PostRepositoryTests {
     @Autowired
     private EntityManager entityManager;
 
-    private PostDTO.Create create;
+    private PostRequestDTO.Create create;
     private Post post;
     @BeforeEach
     void setUp() {
-        create = PostDTO.Create.builder()
+        create = PostRequestDTO.Create.builder()
                 .title("TTILE")
                 .contents("CONTENTS")
                 .password("PASSWORD")

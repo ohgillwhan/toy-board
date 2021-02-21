@@ -1,9 +1,7 @@
 package kr.sooragenius.toy.board.domain;
 
-import kr.sooragenius.toy.board.dto.PostFileDTO;
-import lombok.AccessLevel;
+import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -16,12 +14,13 @@ public class PostFile {
     @Column(name = "FILE_ID")
     private long id;
     private String originalName;
+    private String storedName;
 
     @ManyToOne
     @JoinColumn(name = "POST_ID", referencedColumnName = "POST_ID")
     private Post post;
 
-    public static PostFile create(PostFileDTO.Create create, Post post) {
+    public static PostFile create(PostFileRequestDTO.Create create, Post post) {
         PostFile postFile = new PostFile();
         postFile.originalName = create.getOriginalName();
         postFile.post = post;

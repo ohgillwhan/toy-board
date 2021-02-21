@@ -1,7 +1,7 @@
 package kr.sooragenius.toy.board.domain;
 
 import kr.sooragenius.toy.board.dto.CommentDTO;
-import kr.sooragenius.toy.board.dto.PostDTO;
+import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ public class CommentTests {
 
     @BeforeEach
     public void setUp() {
-        post = Post.create(PostDTO.Create.builder().build());
+        post = Post.create(PostRequestDTO.Create.builder().build());
     }
     @Test
     public void 코멘트는_게시글_밑에_등록이_되어야_한다() {

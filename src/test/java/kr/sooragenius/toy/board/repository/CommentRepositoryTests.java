@@ -3,7 +3,7 @@ package kr.sooragenius.toy.board.repository;
 import kr.sooragenius.toy.board.domain.Comment;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.dto.CommentDTO;
-import kr.sooragenius.toy.board.dto.PostDTO;
+import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,11 +39,11 @@ public class CommentRepositoryTests {
     @Autowired
     private EntityManager entityManager;
 
-    private PostDTO.Create create;
+    private PostRequestDTO.Create create;
     private Post post;
     @BeforeEach
     void setUp() {
-        create = PostDTO.Create.builder()
+        create = PostRequestDTO.Create.builder()
                 .title("TTILE")
                 .contents("CONTENTS")
                 .password("PASSWORD")

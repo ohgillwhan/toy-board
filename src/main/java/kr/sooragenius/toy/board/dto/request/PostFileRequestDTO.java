@@ -1,4 +1,4 @@
-package kr.sooragenius.toy.board.dto;
+package kr.sooragenius.toy.board.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 
-public class PostFileDTO {
+public class PostFileRequestDTO {
     @Data
     @NoArgsConstructor @AllArgsConstructor
     public static class Create {

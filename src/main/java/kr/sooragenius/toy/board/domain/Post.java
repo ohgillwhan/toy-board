@@ -1,14 +1,9 @@
 package kr.sooragenius.toy.board.domain;
 
-import kr.sooragenius.toy.board.dto.PostDTO;
+import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -30,7 +25,7 @@ public class Post {
     public String getPassword() {
         return password;
     }
-    public static Post create(PostDTO.Create create) {
+    public static Post create(PostRequestDTO.Create create) {
         Post post = new Post();
 
         post.title = create.getTitle();
@@ -40,7 +35,7 @@ public class Post {
         return post;
     }
 
-    public void update(PostDTO.Update update) {
+    public void update(PostRequestDTO.Update update) {
         this.title = update.getTitle();
         this.contents = update.getContents();
     }

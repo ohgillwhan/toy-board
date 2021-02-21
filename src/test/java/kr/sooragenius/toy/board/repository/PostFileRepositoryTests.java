@@ -2,8 +2,8 @@ package kr.sooragenius.toy.board.repository;
 
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.domain.PostFile;
-import kr.sooragenius.toy.board.dto.PostDTO;
-import kr.sooragenius.toy.board.dto.PostFileDTO;
+import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
+import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +37,11 @@ public class PostFileRepositoryTests {
     @Autowired
     private EntityManager entityManager;
 
-    private PostDTO.Create create;
+    private PostRequestDTO.Create create;
     private Post post;
     @BeforeEach
     void setUp() {
-        create = PostDTO.Create.builder()
+        create = PostRequestDTO.Create.builder()
                 .title("TTILE")
                 .contents("CONTENTS")
                 .password("PASSWORD")
@@ -62,9 +62,9 @@ public class PostFileRepositoryTests {
         // given
         Post save = postRepository.save(post);
         List<PostFile> postFiles = Arrays.asList(
-                PostFile.create(new PostFileDTO.Create("File1", "File1"), save),
-                PostFile.create(new PostFileDTO.Create("File2", "File2"), save),
-                PostFile.create(new PostFileDTO.Create("File3", "File3"), save)
+                PostFile.create(new PostFileRequestDTO.Create("File1", "File1"), save),
+                PostFile.create(new PostFileRequestDTO.Create("File2", "File2"), save),
+                PostFile.create(new PostFileRequestDTO.Create("File3", "File3"), save)
         );
 
         // when

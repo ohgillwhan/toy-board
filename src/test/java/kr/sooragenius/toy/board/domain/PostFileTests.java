@@ -1,10 +1,9 @@
 package kr.sooragenius.toy.board.domain;
 
-import kr.sooragenius.toy.board.dto.PostDTO;
-import kr.sooragenius.toy.board.dto.PostFileDTO;
+import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
+import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +16,7 @@ public class PostFileTests {
     static void setUp() {
 
         // given
-        PostDTO.Create create = new PostDTO.Create();
+        PostRequestDTO.Create create = new PostRequestDTO.Create();
         create.setPassword("");
         post = Post.create(create);
     }
@@ -26,7 +25,7 @@ public class PostFileTests {
         // given
         String fileName = "한글파일.pdf";
         String storedName = "hangle.pdf";
-        PostFileDTO.Create create = new PostFileDTO.Create(fileName, storedName);
+        PostFileRequestDTO.Create create = new PostFileRequestDTO.Create(fileName, storedName);
         // when
         PostFile postFile = PostFile.create(create, post);
         // then
@@ -37,7 +36,7 @@ public class PostFileTests {
         // given
         String fileName = "한글파일";
         String storedName = "hangle";
-        PostFileDTO.Create create = new PostFileDTO.Create(fileName, storedName);
+        PostFileRequestDTO.Create create = new PostFileRequestDTO.Create(fileName, storedName);
         // when
         PostFile postFile = PostFile.create(create, post);
         // then
@@ -50,9 +49,9 @@ public class PostFileTests {
 
         // when
         List<PostFile> postFiles = Arrays.asList(
-                PostFile.create(new PostFileDTO.Create("File1", "File1"), post),
-                PostFile.create(new PostFileDTO.Create("File2", "File2"), post),
-                PostFile.create(new PostFileDTO.Create("File3", "File3"), post)
+                PostFile.create(new PostFileRequestDTO.Create("File1", "File1"), post),
+                PostFile.create(new PostFileRequestDTO.Create("File2", "File2"), post),
+                PostFile.create(new PostFileRequestDTO.Create("File3", "File3"), post)
         );
 
         // then
