@@ -1,11 +1,9 @@
 package kr.sooragenius.toy.board.domain;
 
-import kr.sooragenius.toy.board.dto.CommentDTO;
+import kr.sooragenius.toy.board.dto.request.CommentRequestDTO;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -27,13 +25,13 @@ public class Comment {
     private Comment parent;
 
 
-    public static Comment create(CommentDTO.Create create, Post post, Comment parent) {
+    public static Comment create(CommentRequestDTO.Create create, Post post, Comment parent) {
         Comment comment = create(create, post);
         comment.parent = parent;
 
         return comment;
     }
-    public static Comment create(CommentDTO.Create create, Post post) {
+    public static Comment create(CommentRequestDTO.Create create, Post post) {
         Comment comment = new Comment();
         comment.contents = create.getContents();
         comment.password = create.getPassword();
@@ -43,7 +41,7 @@ public class Comment {
         return comment;
     }
 
-    public void update(CommentDTO.Update update) {
+    public void update(CommentRequestDTO.Update update) {
         this.contents = update.getContents();
     }
 

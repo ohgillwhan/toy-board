@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -46,9 +47,11 @@ public class PostServiceTests {
     }
 
     @Test
-    public void 패스워드_인코더_낫_널() {
+    public void 패스워드_인코더는_존재해야_하며_Bcrypt여야_한다() {
         assertThat(passwordEncoder).isNotNull();
+        assertThat(passwordEncoder).isInstanceOf(BCryptPasswordEncoder.class);
     }
+
 
 
     @Test

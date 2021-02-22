@@ -2,7 +2,7 @@ package kr.sooragenius.toy.board.repository;
 
 import kr.sooragenius.toy.board.domain.Comment;
 import kr.sooragenius.toy.board.domain.Post;
-import kr.sooragenius.toy.board.dto.CommentDTO;
+import kr.sooragenius.toy.board.dto.request.CommentRequestDTO;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,9 +67,9 @@ public class CommentRepositoryTests {
         // given
         Post savePost = postRepository.save(post);
         List<Comment> comments = Arrays.asList(
-                Comment.create(CommentDTO.Create.builder().contents("Contents_1").password("Password_1").build(), savePost),
-                Comment.create(CommentDTO.Create.builder().contents("Contents_2").password("Password_2").build(), savePost),
-                Comment.create(CommentDTO.Create.builder().contents("Contents_3").password("Password_3").build(), savePost)
+                Comment.create(CommentRequestDTO.Create.builder().contents("Contents_1").password("Password_1").build(), savePost),
+                Comment.create(CommentRequestDTO.Create.builder().contents("Contents_2").password("Password_2").build(), savePost),
+                Comment.create(CommentRequestDTO.Create.builder().contents("Contents_3").password("Password_3").build(), savePost)
         );
         // when
         for(Comment comment : comments) {
@@ -86,14 +86,14 @@ public class CommentRepositoryTests {
     @ParameterizedTest
     @Transactional
     @MethodSource("createCommentWithChildren")
-    public void 코멘트밑에_코멘트(Map.Entry<CommentDTO.Create, List<CommentDTO.Create>> entry) {
+    public void 코멘트밑에_코멘트(Map.Entry<CommentRequestDTO.Create, List<CommentRequestDTO.Create>> entry) {
         // given
         Post savePost = postRepository.save(post);
         Comment parent = Comment.create(entry.getKey(), savePost);
         parent = commentRepository.save(parent);
         // when
         List<Comment> childList = new ArrayList<>();
-        for(CommentDTO.Create childDTO : entry.getValue()) {
+        for(CommentRequestDTO.Create childDTO : entry.getValue()) {
             Comment child = Comment.create(childDTO, post, parent);
             child = commentRepository.save(child);
             childList.add(child);
@@ -113,14 +113,14 @@ public class CommentRepositoryTests {
 
 
     }
-    static List<Map.Entry<CommentDTO.Create, List<CommentDTO.Create>>> createCommentWithChildren() {
-        List<Map.Entry<CommentDTO.Create, List<CommentDTO.Create>>> list = new ArrayList<>();
+    static List<Map.Entry<CommentRequestDTO.Create, List<CommentRequestDTO.Create>>> createCommentWithChildren() {
+        List<Map.Entry<CommentRequestDTO.Create, List<CommentRequestDTO.Create>>> list = new ArrayList<>();
 
         for(int i = 0; i<3; i++) {
-            CommentDTO.Create key = CommentDTO.Create.builder().contents("Contents_" + i).password("Password_" + i).build();
-            List<CommentDTO.Create> values = new ArrayList<>();
+            CommentRequestDTO.Create key = CommentRequestDTO.Create.builder().contents("Contents_" + i).password("Password_" + i).build();
+            List<CommentRequestDTO.Create> values = new ArrayList<>();
             for(int j = 0; j<=i; j++) {
-                values.add(CommentDTO.Create.builder().contents("CHILD_Contents_" + j).password("CHILD_Password_" + j).build());
+                values.add(CommentRequestDTO.Create.builder().contents("CHILD_Contents_" + j).password("CHILD_Password_" + j).build());
             }
             list.add(new AbstractMap.SimpleEntry(key, values));
         }
