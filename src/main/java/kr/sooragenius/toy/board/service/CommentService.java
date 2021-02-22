@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -19,20 +21,24 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
+    @Transactional
     public CommentResponseDTO.Create addComment(CommentRequestDTO.Create create) {
         create.setPassword(passwordEncoder.encode(create.getPassword()));
-        Post post = postRepository.findById(create.getPostId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_POST_MESSAGE));
 
-        Comment comment = null;
-        if(create.hasParent()) {
-            Comment parentComment = commentRepository.findById(create.getParentId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PARENT_COMMENT));
-            comment = Comment.create(create, post, parentComment);
-        }else {
-            comment = Comment.create(create, post);
-        }
-
+        Comment comment = createComment(create);
         Comment save = commentRepository.save(comment);
 
         return CommentResponseDTO.Create.of(save);
+    }
+
+
+    private Comment createComment(CommentRequestDTO.Create create) {
+        Post post = postRepository.findById(create.getPostId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_POST_MESSAGE));
+        if(create.hasParent()) {
+            Comment parentComment = commentRepository.findById(create.getParentId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PARENT_COMMENT));
+            return Comment.create(create, post, parentComment);
+        }
+
+        return Comment.create(create, post);
     }
 }
