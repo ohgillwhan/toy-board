@@ -1,5 +1,6 @@
 package kr.sooragenius.toy.board.repository;
 
+import kr.sooragenius.toy.board.config.QueryDSLConfig;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -19,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(QueryDSLConfig.class)
 public class PostRepositoryTests {
 
     @Container
@@ -30,16 +33,16 @@ public class PostRepositoryTests {
     @Autowired
     private EntityManager entityManager;
 
-    private PostRequestDTO.Create create;
+    private PostRequestDTO.CreateDTO createDTO;
     private Post post;
     @BeforeEach
     void setUp() {
-        create = PostRequestDTO.Create.builder()
+        createDTO = PostRequestDTO.CreateDTO.builder()
                 .title("TTILE")
                 .contents("CONTENTS")
                 .password("PASSWORD")
                 .build();
-        post = Post.create(create);
+        post = Post.create(createDTO);
     }
 
     @Test
@@ -58,9 +61,9 @@ public class PostRepositoryTests {
         post = postRepository.findById(save.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         assertThat(post.getId()).isGreaterThan(0);
-        assertThat(post.getTitle()).isEqualTo(create.getTitle());
-        assertThat(post.getContents()).isEqualTo(create.getContents());
-        assertThat(post.getPassword()).isEqualTo(create.getPassword());
+        assertThat(post.getTitle()).isEqualTo(createDTO.getTitle());
+        assertThat(post.getContents()).isEqualTo(createDTO.getContents());
+        assertThat(post.getPassword()).isEqualTo(createDTO.getPassword());
     }
 
 

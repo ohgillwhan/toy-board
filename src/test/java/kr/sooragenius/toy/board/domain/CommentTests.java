@@ -12,12 +12,12 @@ public class CommentTests {
 
     @BeforeEach
     public void setUp() {
-        post = Post.create(PostRequestDTO.Create.builder().build());
+        post = Post.create(PostRequestDTO.CreateDTO.builder().build());
     }
     @Test
     public void 코멘트는_게시글_밑에_등록이_되어야_한다() {
         // given
-        CommentRequestDTO.Create build = new CommentRequestDTO.Create(1L, "Contents", "Password");
+        CommentRequestDTO.CreateDTO build = new CommentRequestDTO.CreateDTO(1L, "Contents", "Password");
 
         // when
         Comment comment = Comment.create(build, post);
@@ -27,7 +27,7 @@ public class CommentTests {
     @Test
     public void 비밀번호는_한번_설정하면은_변경이_불가능하다() {
         // given
-        CommentRequestDTO.Create build = new CommentRequestDTO.Create(1L, "Contents", "Password");
+        CommentRequestDTO.CreateDTO build = new CommentRequestDTO.CreateDTO(1L, "Contents", "Password");
         // when
         Comment comment = Comment.create(build, post);
         // then
@@ -37,8 +37,8 @@ public class CommentTests {
     @Test
     public void 코멘트_밑에_코멘트가_작성이_가능하다() {
         // given
-        CommentRequestDTO.Create parentCommentCreateDTO = new CommentRequestDTO.Create(1L, "Parents", "Parents");
-        CommentRequestDTO.Create childCommentCreateDTO = new CommentRequestDTO.Create(1L, "Child", "Child");
+        CommentRequestDTO.CreateDTO parentCommentCreateDTO = new CommentRequestDTO.CreateDTO(1L, "Parents", "Parents");
+        CommentRequestDTO.CreateDTO childCommentCreateDTO = new CommentRequestDTO.CreateDTO(1L, "Child", "Child");
 
         Comment parentComment = Comment.create(parentCommentCreateDTO, post);
         // when
@@ -49,16 +49,16 @@ public class CommentTests {
     @Test
     public void 수정을_통해서는_내용만_변경이_가능하다() {
         // given
-        CommentRequestDTO.Create create =  new CommentRequestDTO.Create(1L, "Contents", "Password");
-        Comment comment = Comment.create(create, post);
-        CommentRequestDTO.Update update = new CommentRequestDTO.Update("NEW_CONTENTS");
+        CommentRequestDTO.CreateDTO createDTO =  new CommentRequestDTO.CreateDTO(1L, "Contents", "Password");
+        Comment comment = Comment.create(createDTO, post);
+        CommentRequestDTO.UpdateDTO updateDTO = new CommentRequestDTO.UpdateDTO("NEW_CONTENTS");
 
         // when
-        comment.update(update);
+        comment.update(updateDTO);
 
         // then
-        assertThat(comment.getContents()).isEqualTo(update.getContents());
-        assertThat(comment.getPassword()).isEqualTo(create.getPassword());
+        assertThat(comment.getContents()).isEqualTo(updateDTO.getContents());
+        assertThat(comment.getPassword()).isEqualTo(createDTO.getPassword());
 
     }
 }

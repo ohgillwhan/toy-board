@@ -20,9 +20,9 @@ public class PostFile {
     @JoinColumn(name = "POST_ID", referencedColumnName = "POST_ID")
     private Post post;
 
-    public static PostFile create(PostFileRequestDTO.Create create, Post post) {
+    public static PostFile create(PostFileRequestDTO.CreateDTO createDTO, Post post) {
         PostFile postFile = new PostFile();
-        postFile.originalName = create.getOriginalName();
+        postFile.originalName = createDTO.getOriginalName();
         postFile.post = post;
 
         return postFile;

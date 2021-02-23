@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 public class CommentRequestDTO {
     @Data
     @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Create {
+    public static class CreateDTO {
         @NotEmpty
         private Long postId;
         private Long parentId = 0L;
@@ -19,7 +19,7 @@ public class CommentRequestDTO {
         @NotEmpty
         private String password;
 
-        public Create(@NotEmpty Long postId, @NotEmpty String contents, @NotEmpty String password) {
+        public CreateDTO(@NotEmpty Long postId, @NotEmpty String contents, @NotEmpty String password) {
             this.postId = postId;
             this.contents = contents;
             this.password = password;
@@ -32,7 +32,7 @@ public class CommentRequestDTO {
 
     @Data
     @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Update {
+    public static class UpdateDTO {
         @NotEmpty
         private String contents;
     }

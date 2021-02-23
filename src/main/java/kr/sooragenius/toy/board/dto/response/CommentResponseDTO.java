@@ -6,20 +6,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-
 public class CommentResponseDTO {
     @Data
     @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Create {
+    public static class CreateDTO {
         private Long parentCommentId = 0L;
         private Long commentId;
         private Long postId;
         private String contents;
         private String password;
 
-        public static Create of(Comment save) {
-            Create create = new Create();
+        public static CreateDTO of(Comment save) {
+            CreateDTO create = new CreateDTO();
             if(save.getParent() != null) {
                 create.parentCommentId = save.getParent().getId();
             }

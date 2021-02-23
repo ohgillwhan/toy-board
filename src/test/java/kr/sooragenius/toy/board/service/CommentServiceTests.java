@@ -8,22 +8,18 @@ import kr.sooragenius.toy.board.dto.request.CommentRequestDTO;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.response.CommentResponseDTO;
 import kr.sooragenius.toy.board.repository.CommentRepository;
-import kr.sooragenius.toy.board.repository.CommentRepositoryTests;
 import kr.sooragenius.toy.board.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -32,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
@@ -63,19 +58,19 @@ public class CommentServiceTests {
         // given
         String originalPassword = "Password";
         Long postId = 1L;
-        CommentRequestDTO.Create create = new CommentRequestDTO.Create(1L, "contents", originalPassword);
+        CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, "contents", originalPassword);
         given(postRepository.findById(postId)).willAnswer((item) -> {
-            Post post = Post.create(PostRequestDTO.Create.builder().build());
+            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build());
             ReflectionTestUtils.setField(post, "id", postId);
 
             return Optional.of(post);
         });
         given(commentRepository.save(any())).willAnswer(new ReturnsArgumentAt(0));
         // when
-        CommentResponseDTO.Create createResponse = commentService.addComment(create);
+        CommentResponseDTO.CreateDTO createResponse = commentService.addComment(createDTO);
         // then
         assertThat(createResponse.getPostId()).isEqualTo(postId);
-        assertThat(createResponse.getContents()).isEqualTo(create.getContents());
+        assertThat(createResponse.getContents()).isEqualTo(createDTO.getContents());
         assertThat(passwordEncoder.matches(originalPassword, createResponse.getPassword())).isTrue();
     }
 
@@ -84,17 +79,17 @@ public class CommentServiceTests {
         // given
         Long postId = 1L;
         Long parentId = 1L;
-        CommentRequestDTO.Create create = new CommentRequestDTO.Create(1L, parentId,"contents", "password");
+        CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, parentId,"contents", "password");
 
         given(postRepository.findById(postId)).willAnswer((item) -> {
-            Post post = Post.create(PostRequestDTO.Create.builder().build());
+            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build());
             ReflectionTestUtils.setField(post, "id", postId);
 
             return Optional.of(post);
         });
         given(commentRepository.findById(parentId)).willAnswer((item) -> {
-            CommentRequestDTO.Create parent = new CommentRequestDTO.Create(postId, "PARENT", "PARENT");
-            Post post = Post.create(PostRequestDTO.Create.builder().build());
+            CommentRequestDTO.CreateDTO parent = new CommentRequestDTO.CreateDTO(postId, "PARENT", "PARENT");
+            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build());
             ReflectionTestUtils.setField(post, "id", postId);
 
             Comment comment = Comment.create(parent, post);
@@ -104,7 +99,7 @@ public class CommentServiceTests {
         });
         given(commentRepository.save(any())).willAnswer(new ReturnsArgumentAt(0));
         // when
-        CommentResponseDTO.Create addedComment = commentService.addComment(create);
+        CommentResponseDTO.CreateDTO addedComment = commentService.addComment(createDTO);
         // then
         assertThat(addedComment.getParentCommentId()).isEqualTo(parentId);
     }
@@ -112,10 +107,10 @@ public class CommentServiceTests {
     @Test
     public void 게시글이_없으면은_에러가_발생해야_한다() {
         String originalPassword = "Password";
-        CommentRequestDTO.Create create = new CommentRequestDTO.Create(1L, "contents", originalPassword);
+        CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, "contents", originalPassword);
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> commentService.addComment(create))
+                .isThrownBy(() -> commentService.addComment(createDTO))
                 .withMessage(CommentService.NOT_FOUND_POST_MESSAGE);
     }
 }

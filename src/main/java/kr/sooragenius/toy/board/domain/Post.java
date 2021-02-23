@@ -25,18 +25,18 @@ public class Post {
     public String getPassword() {
         return password;
     }
-    public static Post create(PostRequestDTO.Create create) {
+    public static Post create(PostRequestDTO.CreateDTO createDTO) {
         Post post = new Post();
 
-        post.title = create.getTitle();
-        post.contents = create.getContents();
-        post.password = create.getPassword();
+        post.title = createDTO.getTitle();
+        post.contents = createDTO.getContents();
+        post.password = createDTO.getPassword();
 
         return post;
     }
 
-    public void update(PostRequestDTO.Update update) {
-        this.title = update.getTitle();
-        this.contents = update.getContents();
+    public void update(PostRequestDTO.UpdateDTO updateDTO) {
+        this.title = updateDTO.getTitle();
+        this.contents = updateDTO.getContents();
     }
 }

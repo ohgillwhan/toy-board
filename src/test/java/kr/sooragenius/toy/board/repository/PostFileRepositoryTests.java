@@ -1,5 +1,6 @@
 package kr.sooragenius.toy.board.repository;
 
+import kr.sooragenius.toy.board.config.QueryDSLConfig;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.domain.PostFile;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -23,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(QueryDSLConfig.class)
 public class PostFileRepositoryTests {
 
     @Container
@@ -37,16 +40,16 @@ public class PostFileRepositoryTests {
     @Autowired
     private EntityManager entityManager;
 
-    private PostRequestDTO.Create create;
+    private PostRequestDTO.CreateDTO createDTO;
     private Post post;
     @BeforeEach
     void setUp() {
-        create = PostRequestDTO.Create.builder()
+        createDTO = PostRequestDTO.CreateDTO.builder()
                 .title("TTILE")
                 .contents("CONTENTS")
                 .password("PASSWORD")
                 .build();
-        post = Post.create(create);
+        post = Post.create(createDTO);
     }
 
     @Test
@@ -62,9 +65,9 @@ public class PostFileRepositoryTests {
         // given
         Post save = postRepository.save(post);
         List<PostFile> postFiles = Arrays.asList(
-                PostFile.create(new PostFileRequestDTO.Create("File1", "File1"), save),
-                PostFile.create(new PostFileRequestDTO.Create("File2", "File2"), save),
-                PostFile.create(new PostFileRequestDTO.Create("File3", "File3"), save)
+                PostFile.create(new PostFileRequestDTO.CreateDTO("File1", "File1"), save),
+                PostFile.create(new PostFileRequestDTO.CreateDTO("File2", "File2"), save),
+                PostFile.create(new PostFileRequestDTO.CreateDTO("File3", "File3"), save)
         );
 
         // when

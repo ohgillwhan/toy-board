@@ -16,18 +16,18 @@ public class PostFileTests {
     static void setUp() {
 
         // given
-        PostRequestDTO.Create create = new PostRequestDTO.Create();
-        create.setPassword("");
-        post = Post.create(create);
+        PostRequestDTO.CreateDTO createDTO = new PostRequestDTO.CreateDTO();
+        createDTO.setPassword("");
+        post = Post.create(createDTO);
     }
     @Test
     public void 첨부파일은_확장자를_가져올_수_있어야_한다() {
         // given
         String fileName = "한글파일.pdf";
         String storedName = "hangle.pdf";
-        PostFileRequestDTO.Create create = new PostFileRequestDTO.Create(fileName, storedName);
+        PostFileRequestDTO.CreateDTO createDTO = new PostFileRequestDTO.CreateDTO(fileName, storedName);
         // when
-        PostFile postFile = PostFile.create(create, post);
+        PostFile postFile = PostFile.create(createDTO, post);
         // then
         assertThat(postFile.getExtension()).isEqualTo("pdf");
     }
@@ -36,9 +36,9 @@ public class PostFileTests {
         // given
         String fileName = "한글파일";
         String storedName = "hangle";
-        PostFileRequestDTO.Create create = new PostFileRequestDTO.Create(fileName, storedName);
+        PostFileRequestDTO.CreateDTO createDTO = new PostFileRequestDTO.CreateDTO(fileName, storedName);
         // when
-        PostFile postFile = PostFile.create(create, post);
+        PostFile postFile = PostFile.create(createDTO, post);
         // then
         assertThat(postFile.getExtension()).isEqualTo("");
     }
@@ -49,9 +49,9 @@ public class PostFileTests {
 
         // when
         List<PostFile> postFiles = Arrays.asList(
-                PostFile.create(new PostFileRequestDTO.Create("File1", "File1"), post),
-                PostFile.create(new PostFileRequestDTO.Create("File2", "File2"), post),
-                PostFile.create(new PostFileRequestDTO.Create("File3", "File3"), post)
+                PostFile.create(new PostFileRequestDTO.CreateDTO("File1", "File1"), post),
+                PostFile.create(new PostFileRequestDTO.CreateDTO("File2", "File2"), post),
+                PostFile.create(new PostFileRequestDTO.CreateDTO("File3", "File3"), post)
         );
 
         // then

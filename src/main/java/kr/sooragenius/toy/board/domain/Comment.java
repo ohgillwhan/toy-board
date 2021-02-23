@@ -25,24 +25,24 @@ public class Comment {
     private Comment parent;
 
 
-    public static Comment create(CommentRequestDTO.Create create, Post post, Comment parent) {
-        Comment comment = create(create, post);
+    public static Comment create(CommentRequestDTO.CreateDTO createDTO, Post post, Comment parent) {
+        Comment comment = create(createDTO, post);
         comment.parent = parent;
 
         return comment;
     }
-    public static Comment create(CommentRequestDTO.Create create, Post post) {
+    public static Comment create(CommentRequestDTO.CreateDTO createDTO, Post post) {
         Comment comment = new Comment();
-        comment.contents = create.getContents();
-        comment.password = create.getPassword();
+        comment.contents = createDTO.getContents();
+        comment.password = createDTO.getPassword();
         comment.post = post;
         comment.parent = comment;
 
         return comment;
     }
 
-    public void update(CommentRequestDTO.Update update) {
-        this.contents = update.getContents();
+    public void update(CommentRequestDTO.UpdateDTO updateDTO) {
+        this.contents = updateDTO.getContents();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package kr.sooragenius.toy.board.repository;
 
 import kr.sooragenius.toy.board.config.QueryDSLConfig;
-import kr.sooragenius.toy.board.config.TestQueryDSLConfig;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.domain.PostFile;
 import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
@@ -55,16 +54,16 @@ public class PostQueryDSLRepositoryTests {
         Map<Long, Long> postIdToFileSize = new HashMap<>();
         final long postId = 1L;
         for(int i = 0; i<5; i++) {
-            List<PostFileRequestDTO.Create> files = new ArrayList<>();
+            List<PostFileRequestDTO.CreateDTO> files = new ArrayList<>();
             for(int j = 0; j<i; j++) {
-                files.add(new PostFileRequestDTO.Create("Original_" + i + "_" + j, "Stored_" + i + "_"+j));
+                files.add(new PostFileRequestDTO.CreateDTO("Original_" + i + "_" + j, "Stored_" + i + "_"+j));
             }
-            PostRequestDTO.Create create = new PostRequestDTO.Create("Title", "Contents", "Password", files);
+            PostRequestDTO.CreateDTO createDTO = new PostRequestDTO.CreateDTO("Title", "Contents", "Password", files);
 
-            Post post = Post.create(create);
+            Post post = Post.create(createDTO);
             postRepository.save(post);
 
-            for(PostFileRequestDTO.Create file : files) {
+            for(PostFileRequestDTO.CreateDTO file : files) {
                 postFileRepository.save(PostFile.create(file, post));
             }
             postIdToFileSize.put(post.getId(), (long) files.size());

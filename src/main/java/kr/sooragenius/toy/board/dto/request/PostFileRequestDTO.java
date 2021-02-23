@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 public class PostFileRequestDTO {
     @Data
     @NoArgsConstructor @AllArgsConstructor
-    public static class Create {
+    public static class CreateDTO {
         @NotEmpty
         private String originalName;
         @NotEmpty

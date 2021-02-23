@@ -16,7 +16,7 @@ public class PostResponseDTO {
         private String contents;
         private String password;
 
-        private List<PostFileResponseDTO.Create> files;
+        private List<PostFileResponseDTO.CreateDTO> files;
 
         public static Create of(Post post, List<PostFile> files) {
             Create create = new Create();
@@ -26,7 +26,7 @@ public class PostResponseDTO {
 
             if(files != null && !files.isEmpty()) {
                 create.files = files.stream()
-                        .map(PostFileResponseDTO.Create::of)
+                        .map(PostFileResponseDTO.CreateDTO::of)
                         .collect(Collectors.toList());
             }
 
@@ -38,7 +38,7 @@ public class PostResponseDTO {
         private String title;
         private String contents;
 
-        private java.util.List<PostFileResponseDTO.Create> files;
+        private java.util.List<PostFileResponseDTO.CreateDTO> files;
 
         public static ViewDTO of(Post post, List<PostFile> files) {
             ViewDTO viewDTO = new ViewDTO();
@@ -47,7 +47,7 @@ public class PostResponseDTO {
 
             if(files != null && !files.isEmpty()) {
                 viewDTO.files = files.stream()
-                        .map(PostFileResponseDTO.Create::of)
+                        .map(PostFileResponseDTO.CreateDTO::of)
                         .collect(Collectors.toList());
             }
 

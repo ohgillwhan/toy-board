@@ -14,7 +14,7 @@ public class PostRequestDTO {
     @Data
     @NoArgsConstructor @Builder
     @AllArgsConstructor
-    public static class Create {
+    public static class CreateDTO {
         @NotEmpty
         private String title;
         @NotEmpty
@@ -22,7 +22,7 @@ public class PostRequestDTO {
         @NotEmpty
         private String password;
 
-        private List<PostFileRequestDTO.Create> files = new ArrayList<>();
+        private List<PostFileRequestDTO.CreateDTO> files = new ArrayList<>();
 
         public void passwordEncode(PasswordEncoder passwordEncoder) {
             this.password = passwordEncoder.encode(password);
@@ -32,7 +32,7 @@ public class PostRequestDTO {
     @Data
     @NoArgsConstructor @Builder
     @AllArgsConstructor
-    public static class Update {
+    public static class UpdateDTO {
         @NotEmpty
         private String title;
         @NotEmpty

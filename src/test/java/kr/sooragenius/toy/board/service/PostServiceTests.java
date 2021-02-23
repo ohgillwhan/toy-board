@@ -7,7 +7,6 @@ import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.response.PostFileResponseDTO;
 import kr.sooragenius.toy.board.dto.response.PostResponseDTO;
-import kr.sooragenius.toy.board.repository.PostFileRepository;
 import kr.sooragenius.toy.board.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class})
 @ExtendWith({SpringExtension.class})
@@ -58,15 +56,15 @@ public class PostServiceTests {
     public void 게시글_추가_암호화_확인() {
         // given
         String originalPassword = "Password";
-        PostRequestDTO.Create create = new PostRequestDTO.Create("Title", "Contents", originalPassword, null);
+        PostRequestDTO.CreateDTO createDTO = new PostRequestDTO.CreateDTO("Title", "Contents", originalPassword, null);
         given(postRepository.save(any())).willAnswer(returnsFirstArg());
         // when
-        PostResponseDTO.Create responseCreate = postService.addPost(create);
+        PostResponseDTO.Create responseCreate = postService.addPost(createDTO);
         // then
         assertThat(responseCreate.getTitle())
-                .isEqualTo(create.getTitle());
+                .isEqualTo(createDTO.getTitle());
         assertThat(responseCreate.getContents())
-                .isEqualTo(create.getContents());
+                .isEqualTo(createDTO.getContents());
         assertThat(passwordEncoder.matches(originalPassword, responseCreate.getPassword())).isTrue();
     }
 
@@ -74,24 +72,24 @@ public class PostServiceTests {
     public void 게시글_추가시_첨부파일도_같이() {
         // given
         final long postId = 1L;
-        List<PostFileRequestDTO.Create> files = Arrays.asList(
-                new PostFileRequestDTO.Create("Original_1", "Stored_1"),
-                new PostFileRequestDTO.Create("Original_2", "Stored_2"),
-                new PostFileRequestDTO.Create("Original_3", "Stored_3"),
-                new PostFileRequestDTO.Create("Original_4", "Stored_4"),
-                new PostFileRequestDTO.Create("Original_5", "Stored_5")
+        List<PostFileRequestDTO.CreateDTO> files = Arrays.asList(
+                new PostFileRequestDTO.CreateDTO("Original_1", "Stored_1"),
+                new PostFileRequestDTO.CreateDTO("Original_2", "Stored_2"),
+                new PostFileRequestDTO.CreateDTO("Original_3", "Stored_3"),
+                new PostFileRequestDTO.CreateDTO("Original_4", "Stored_4"),
+                new PostFileRequestDTO.CreateDTO("Original_5", "Stored_5")
         );
-        PostRequestDTO.Create create = new PostRequestDTO.Create("Title", "Contents", "Password", files);
+        PostRequestDTO.CreateDTO createDTO = new PostRequestDTO.CreateDTO("Title", "Contents", "Password", files);
         given(postRepository.save(any())).willAnswer(item -> {
             Post post = item.getArgument(0);
             ReflectionTestUtils.setField(post, "id", postId);
             return post;
         });
         // when
-        PostResponseDTO.Create addedPost = postService.addPost(create);
+        PostResponseDTO.Create addedPost = postService.addPost(createDTO);
         // then
         assertThat(addedPost.getFiles().size()).isEqualTo(files.size());
-        for(PostFileResponseDTO.Create file : addedPost.getFiles()) {
+        for(PostFileResponseDTO.CreateDTO file : addedPost.getFiles()) {
             assertThat(file.getPostId()).isEqualTo(postId);
         }
     }

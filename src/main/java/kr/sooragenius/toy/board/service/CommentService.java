@@ -22,23 +22,23 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public CommentResponseDTO.Create addComment(CommentRequestDTO.Create create) {
-        create.setPassword(passwordEncoder.encode(create.getPassword()));
+    public CommentResponseDTO.CreateDTO addComment(CommentRequestDTO.CreateDTO createDTO) {
+        createDTO.setPassword(passwordEncoder.encode(createDTO.getPassword()));
 
-        Comment comment = createComment(create);
+        Comment comment = createComment(createDTO);
         Comment save = commentRepository.save(comment);
 
-        return CommentResponseDTO.Create.of(save);
+        return CommentResponseDTO.CreateDTO.of(save);
     }
 
 
-    private Comment createComment(CommentRequestDTO.Create create) {
-        Post post = postRepository.findById(create.getPostId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_POST_MESSAGE));
-        if(create.hasParent()) {
-            Comment parentComment = commentRepository.findById(create.getParentId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PARENT_COMMENT));
-            return Comment.create(create, post, parentComment);
+    private Comment createComment(CommentRequestDTO.CreateDTO createDTO) {
+        Post post = postRepository.findById(createDTO.getPostId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_POST_MESSAGE));
+        if(createDTO.hasParent()) {
+            Comment parentComment = commentRepository.findById(createDTO.getParentId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PARENT_COMMENT));
+            return Comment.create(createDTO, post, parentComment);
         }
 
-        return Comment.create(create, post);
+        return Comment.create(createDTO, post);
     }
 }

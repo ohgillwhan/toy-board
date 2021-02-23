@@ -9,11 +9,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.BDDMockito.given;
-
-@WebMvcTest(PostQueryController.class)
+@WebMvcTest(PostController.class)
 @ExtendWith(MockitoExtension.class)
-public class PostQueryControllerTests {
+public class PostControllerTests {
     @Autowired
     private MockMvc mockMvc;
 

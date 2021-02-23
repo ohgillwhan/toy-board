@@ -5,24 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-
 public class PostFileResponseDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Create {
+    public static class CreateDTO {
         private Long postId;
         private String originalName;
         private String storedName;
 
-        public static Create of(PostFile postFile) {
-            Create create = new Create();
-            create.postId = postFile.getPost().getId();
-            create.originalName = postFile.getOriginalName();
-            create.storedName = postFile.getStoredName();
+        public static CreateDTO of(PostFile postFile) {
+            CreateDTO createDTO = new CreateDTO();
+            createDTO.postId = postFile.getPost().getId();
+            createDTO.originalName = postFile.getOriginalName();
+            createDTO.storedName = postFile.getStoredName();
 
-            return create;
+            return createDTO;
         }
     }
 }

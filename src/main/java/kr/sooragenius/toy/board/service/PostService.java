@@ -21,13 +21,13 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public PostResponseDTO.Create addPost(PostRequestDTO.Create create) {
-        create.passwordEncode(passwordEncoder);
-        Post save = postRepository.save(Post.create(create));
+    public PostResponseDTO.Create addPost(PostRequestDTO.CreateDTO createDTO) {
+        createDTO.passwordEncode(passwordEncoder);
+        Post save = postRepository.save(Post.create(createDTO));
 
         List<PostFile> files = new ArrayList<>();
-        if(!create.getFiles().isEmpty()) {
-            files = create.getFiles().stream()
+        if(createDTO.getFiles() != null && !createDTO.getFiles().isEmpty()) {
+            files = createDTO.getFiles().stream()
                     .map(item -> PostFile.create(item, save))
                     .collect(Collectors.toList());
         }
@@ -35,15 +35,10 @@ public class PostService {
         return PostResponseDTO.Create.of(save, files);
     }
 
-    public List<PostResponseDTO.ViewDTO> findListAll() {
+    public List<PostResponseDTO.ListDTO> findListAll() {
         // 애매하다.. 1:N 관계인데.. 단방향 매핑이다.
         // 게시글 : 첨부파일인데
         // 고유번호 제목 첨부파일 갯수를 뽑아와야하는데 어떻게 할까..
-//        return postRepository.findAll()
-//                .stream()
-//                .map(PostResponseDTO.View::of)
-//                .collect(Collectors.toList());
-
-        return null;
+        return postRepository.findListAll();
     }
 }
