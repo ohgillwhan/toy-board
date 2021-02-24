@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class PostResponseDTO {
     @Data
     public static class Create {
+        private Long postId;
         private String title;
         private String contents;
         private String password;
@@ -20,6 +21,7 @@ public class PostResponseDTO {
 
         public static Create of(Post post, List<PostFile> files) {
             Create create = new Create();
+            create.postId = post.getId();
             create.title = post.getTitle();
             create.contents = post.getContents();
             create.password = post.getPassword();
@@ -33,15 +35,17 @@ public class PostResponseDTO {
             return create;
         }
     }
-
+    @Data
     public static class ViewDTO {
+        private Long postId;
         private String title;
         private String contents;
 
-        private java.util.List<PostFileResponseDTO.CreateDTO> files;
+        private List<PostFileResponseDTO.CreateDTO> files;
 
         public static ViewDTO of(Post post, List<PostFile> files) {
             ViewDTO viewDTO = new ViewDTO();
+            viewDTO.postId = post.getId();
             viewDTO.title = post.getTitle();
             viewDTO.contents = post.getContents();
 
@@ -61,5 +65,6 @@ public class PostResponseDTO {
         private Long postId;
         private String title;
         private Long fileLength;
+        private int hits;
     }
 }

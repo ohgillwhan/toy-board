@@ -60,7 +60,7 @@ public class CommentServiceTests {
         Long postId = 1L;
         CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, "contents", originalPassword);
         given(postRepository.findById(postId)).willAnswer((item) -> {
-            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build());
+            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build(), "IP","NAME");
             ReflectionTestUtils.setField(post, "id", postId);
 
             return Optional.of(post);
@@ -82,14 +82,14 @@ public class CommentServiceTests {
         CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, parentId,"contents", "password");
 
         given(postRepository.findById(postId)).willAnswer((item) -> {
-            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build());
+            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build(), "IP","NAME");
             ReflectionTestUtils.setField(post, "id", postId);
 
             return Optional.of(post);
         });
         given(commentRepository.findById(parentId)).willAnswer((item) -> {
             CommentRequestDTO.CreateDTO parent = new CommentRequestDTO.CreateDTO(postId, "PARENT", "PARENT");
-            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build());
+            Post post = Post.create(PostRequestDTO.CreateDTO.builder().build(), "IP","NAME");
             ReflectionTestUtils.setField(post, "id", postId);
 
             Comment comment = Comment.create(parent, post);

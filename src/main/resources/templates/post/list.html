@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>첨부파일 개수</th>
+                <th>조회수</th>
+            </tr>
+        </thead>
+        <tr th:if="${lists.isEmpty()}">
+            <td colspan="3">게시글이 없습니다.</td>
+        </tr>
+        <tr th:if="${!lists.isEmpty()}" th:each="post : ${lists}">
+            <td th:text="${post.getPostId()}"></td>
+            <td>
+                <a th:href="@{'/posts/'} + ${post.getPostId()}" th:text="${post.getTitle()}">
+
+                </a>
+            </td>
+            <td th:text="${post.getFileLength()}"></td>
+            <td th:text="${post.getHits()}"></td>
+        </tr>
+    </table>
+    <a th:href="@{/posts/create}">글쓰기</a>
+</body>
+</html>

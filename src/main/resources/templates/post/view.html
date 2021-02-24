@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <tbody>
+            <tr>
+                <th>고유번호</th>
+                <td th:text="${result.getPostId()}"></td>
+            </tr>
+            <tr>
+                <th>제목</th>
+                <td th:text="${result.getTitle()}"></td>
+            </tr>
+            <tr>
+                <th>내용</th>
+                <td th:text="${result.getContents()}"></td>
+            </tr>
+            <tr>
+                <th>첨부파일</th>
+                <td>
+                    <a th:each="file : ${result.getFiles()}" th:href="'/post-files/' + ${file.getFileId()}">
+                        다운로드
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    <h2>삭제</h2>
+    <h3 th:if="${message != null}" th:text="${message}"></h3>
+    <form th:action="@{'/posts/'} + ${result.getPostId()}" method="post">
+        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="postId" th:value="${result.getPostId()}">
+        <table>
+            <tbody>
+            <tr>
+                <th>비밀번호</th>
+                <td>
+                    <input type="text" name="password" value="">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="submit" onclick="return confirm('정말로 삭제하시겠습니까?')" value="삭제">
+    </form>
+    <br/>
+    <a th:href="@{/posts}">목록</a>
+</body>
+</html>

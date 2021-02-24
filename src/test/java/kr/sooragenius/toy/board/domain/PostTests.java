@@ -18,7 +18,7 @@ public class PostTests {
         // given
         PostRequestDTO.CreateDTO createDTO = new PostRequestDTO.CreateDTO();
         createDTO.setPassword("");
-        Post post = Post.create(createDTO);
+        Post post = Post.create(createDTO, "IP","NAME");
         // when
         for(int i = 0; i<loop; i++) {
             post.view();
@@ -36,7 +36,7 @@ public class PostTests {
         createDTO.setPassword(password);
 
         // when
-        Post post = Post.create(createDTO);
+        Post post = Post.create(createDTO, "IP","NAME");
 
         // then
         assertThat(post.getPassword())
@@ -51,7 +51,7 @@ public class PostTests {
                 .contents("CONTENTS")
                 .password("PASSWORD").build();
         int hits = 1000;
-        Post post = Post.create(createDTO);
+        Post post = Post.create(createDTO, "IP","NAME");
         ReflectionTestUtils.setField(post, "hits", hits);
 
         PostRequestDTO.UpdateDTO updateDTO = PostRequestDTO.UpdateDTO.builder()

@@ -26,11 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 @Testcontainers
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(QueryDSLConfig.class)
 public class PostQueryDSLRepositoryTests {
-    @Container
-    private static final MySQLContainer container = new MySQLContainer();
 
     @Autowired
     private PostRepository postRepository;
@@ -39,13 +36,6 @@ public class PostQueryDSLRepositoryTests {
     @Autowired
     private EntityManager entityManager;
 
-
-
-    @Test
-    public void 컨테이너_동작_테스트() {
-        assertThat(container).isNotNull();
-        assertThat(container.isRunning()).isTrue();
-    }
 
     @Test
     @Disabled
@@ -60,7 +50,7 @@ public class PostQueryDSLRepositoryTests {
             }
             PostRequestDTO.CreateDTO createDTO = new PostRequestDTO.CreateDTO("Title", "Contents", "Password", files);
 
-            Post post = Post.create(createDTO);
+            Post post = Post.create(createDTO, "IP","NAME");
             postRepository.save(post);
 
             for(PostFileRequestDTO.CreateDTO file : files) {

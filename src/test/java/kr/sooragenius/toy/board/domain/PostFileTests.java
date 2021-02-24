@@ -18,7 +18,7 @@ public class PostFileTests {
         // given
         PostRequestDTO.CreateDTO createDTO = new PostRequestDTO.CreateDTO();
         createDTO.setPassword("");
-        post = Post.create(createDTO);
+        post = Post.create(createDTO, "IP","NAME");
     }
     @Test
     public void 첨부파일은_확장자를_가져올_수_있어야_한다() {

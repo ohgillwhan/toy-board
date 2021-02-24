@@ -12,7 +12,7 @@ public class CommentTests {
 
     @BeforeEach
     public void setUp() {
-        post = Post.create(PostRequestDTO.CreateDTO.builder().build());
+        post = Post.create(PostRequestDTO.CreateDTO.builder().build(), "IP", "NAME");
     }
     @Test
     public void 코멘트는_게시글_밑에_등록이_되어야_한다() {

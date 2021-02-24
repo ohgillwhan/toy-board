@@ -35,7 +35,8 @@ public class PostQueryDSLRepositoryImpl extends QuerydslRepositorySupport implem
                                 )
                                         .from(QPostFile.postFile)
                                         .where(QPostFile.postFile.post().eq(QPost.post))
-                                , "fileLength")
+                                , "fileLength"),
+                        QPost.post.hits
                 )
         )
                 .from(QPost.post)

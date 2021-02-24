@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form th:action="@{/posts}" method="post" enctype="multipart/form-data">
+        <table>
+            <tbody>
+                <tr>
+                    <th>제목</th>
+                    <td>
+                        <input name="title">
+                    </td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td>
+                        <textarea name="contents"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th>비밀번호</th>
+                    <td>
+                        <input name="password" type="password">
+                    </td>
+                </tr>
+                <tr>
+                    <th>첨부파일</th>
+                    <td>
+                        <input type="file" name="uploadFiles"><br/>
+                        <input type="file" name="uploadFiles"><br/>
+                        <input type="file" name="uploadFiles"><br/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="submit">
+    </form>
+
+</body>
+</html>

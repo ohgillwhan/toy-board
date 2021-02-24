@@ -20,12 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(QueryDSLConfig.class)
 public class PostRepositoryTests {
-
-    @Container
-    private static final MySQLContainer container = new MySQLContainer();
 
     @Autowired
     private PostRepository postRepository;
@@ -42,13 +38,7 @@ public class PostRepositoryTests {
                 .contents("CONTENTS")
                 .password("PASSWORD")
                 .build();
-        post = Post.create(createDTO);
-    }
-
-    @Test
-    public void 컨테이너_동작_테스트() {
-        assertThat(container).isNotNull();
-        assertThat(container.isRunning()).isTrue();
+        post = Post.create(createDTO, "IP","NAME");
     }
 
     @Test

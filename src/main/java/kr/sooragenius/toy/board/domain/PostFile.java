@@ -23,6 +23,7 @@ public class PostFile {
     public static PostFile create(PostFileRequestDTO.CreateDTO createDTO, Post post) {
         PostFile postFile = new PostFile();
         postFile.originalName = createDTO.getOriginalName();
+        postFile.storedName = createDTO.getStoredName();
         postFile.post = post;
 
         return postFile;
