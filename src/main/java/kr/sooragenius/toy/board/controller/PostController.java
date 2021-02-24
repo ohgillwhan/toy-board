@@ -2,8 +2,10 @@ package kr.sooragenius.toy.board.controller;
 
 import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
+import kr.sooragenius.toy.board.dto.response.CommentResponseDTO;
 import kr.sooragenius.toy.board.dto.response.PostResponseDTO;
 import kr.sooragenius.toy.board.exception.InvalidPasswordException;
+import kr.sooragenius.toy.board.service.CommentService;
 import kr.sooragenius.toy.board.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final CommentService commentService;
+
 
     @Value("${kr.sooragenius.toy.board.file_store_path}")
     private String fileStorePath;
@@ -38,7 +42,10 @@ public class PostController {
     @GetMapping("/{id}")
     public String view(ModelMap modelMap, @PathVariable("id") Long id) {
         postService.increaseHit(id);
+
         modelMap.addAttribute("result", postService.findById(id));
+        modelMap.addAttribute("commentsCollection", new CommentResponseDTO.ViewDTOCollection(commentService.findAllByPostId(id)));
+
         return "post/view";
     }
     @GetMapping(value = "/create")

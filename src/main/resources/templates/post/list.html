@@ -5,7 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-    <table>
+    <h2 style="color:red" th:if="${message != null}" th:text="${message}"></h2>
+    <table border="1">
         <thead>
             <tr>
                 <th>번호</th>

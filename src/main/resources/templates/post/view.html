@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-    <table>
+    <table border="1">
         <tbody>
             <tr>
                 <th>고유번호</th>
@@ -27,27 +27,79 @@
                     </a>
                 </td>
             </tr>
-        </tbody>
-    </table>
-    <br/>
-    <h2>삭제</h2>
-    <h3 th:if="${message != null}" th:text="${message}"></h3>
-    <form th:action="@{'/posts/'} + ${result.getPostId()}" method="post">
-        <input type="hidden" name="_method" value="delete">
-        <input type="hidden" name="postId" th:value="${result.getPostId()}">
-        <table>
-            <tbody>
             <tr>
-                <th>비밀번호</th>
+                <th>댓글</th>
                 <td>
-                    <input type="text" name="password" value="">
+                    <ul th:if="${!commentsCollection.isEmpty()}">
+                        <li th:each="commentEntry : ${commentsCollection.sort()}" th:with="comment=${commentEntry.getKey()}, level=${commentEntry.getValue()} ">
+                            <th:block th:each="index : ${#numbers.sequence(1, level)}">__</th:block>
+                            <th:block th:text="${comment.getContents()}"></th:block>
+                            <th:block th:text="${level}"></th:block>
+                            <a href="#n" th:onclick="'replyTo(' + ${comment.getCommentId()} + ')'">답변</a>
+                            <a href="#n" th:onclick="'deleteComment(' + ${comment.getCommentId()} + ')'">삭제</a>
+                        </li>
+                    </ul>
+                    <br/>
+                    내용 : <input type="text" name="contents" id="contents"/> <br/>
+                    비밀번호 : <input type="password" name="password" id="password"/> <br/>
+                    <input type="submit" value="등록" onclick="addComment();"/>
                 </td>
             </tr>
-            </tbody>
-        </table>
-        <input type="submit" onclick="return confirm('정말로 삭제하시겠습니까?')" value="삭제">
-    </form>
-    <br/>
+        </tbody>
+    </table>
+    <h3 th:if="${message != null}" th:text="${message}"></h3>
+
     <a th:href="@{/posts}">목록</a>
+    <a href="#n" onclick="deletePost()">삭제</a>
+    <form th:action="@{'/posts/'} + ${result.getPostId()}" method="post" name="delete_form">
+        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="postId" th:value="${result.getPostId()}">
+        <input type="hidden" name="password" value="">
+    </form>
+
+    <form name="add_comment" method="post" th:action="@{/post-comments}">
+        <input type="hidden" name="postId" th:value="${result.getPostId()}">
+        <input type="hidden" name="parentId" value="0"/>
+        <input type="hidden" name="contents" value=""/>
+        <input type="hidden" name="password" value=""/>
+    </form>
+
+    <form name="delete_comment" method="post" th:action="@{/post-comments}">
+        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="postId" th:value="${result.getPostId()}">
+        <input type="hidden" name="contents" value=""/>
+        <input type="hidden" name="password" value=""/>
+    </form>
+    <script type="text/javascript">
+        function deletePost() {
+            password = prompt("삭제를 원하시면 비밀번호를 입력해주세요.");
+            if(password != null) {
+                document.delete_form.password.value = password;
+                document.delete_form.submit();
+                return true;
+            }
+            return false;
+
+        }
+        function deleteComment(commentId) {
+            password = prompt("삭제를 원하시면 비밀번호를 입력해주세요.");
+            if(password != null) {
+                document.delete_comment.password.value = password;
+                document.delete_comment.action += '/' + commentId;
+                document.delete_comment.submit();
+                return true;
+            }
+            return false;
+        }
+        function replyTo(commentId) {
+            document.add_comment.parentId.value = commentId;
+        }
+        function addComment() {
+            document.add_comment.contents.value = document.getElementById("contents").value;
+            document.add_comment.password.value = document.getElementById("password").value;
+
+            document.add_comment.submit();
+        }
+    </script>
 </body>
 </html>

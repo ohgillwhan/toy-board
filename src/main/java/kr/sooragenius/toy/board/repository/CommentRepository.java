@@ -11,4 +11,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     @Query("select c from Comment c where c.parent.id = ?1 and c.id <> c.parent.id")
     List<Comment> findByParentIdWithoutSelf(Long parentId);
+
+    List<Comment> findAllByPostId(Long id);
 }

@@ -36,4 +36,11 @@ public class CommentRequestDTO {
         @NotEmpty
         private String contents;
     }
+    @Data
+    @NoArgsConstructor @AllArgsConstructor
+    public static class DeleteDTO {
+        private Long postId;
+        private Long commentId;
+        private String password;
+    }
 }

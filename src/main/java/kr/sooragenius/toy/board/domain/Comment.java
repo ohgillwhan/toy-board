@@ -21,7 +21,7 @@ public class Comment {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "PARENT_ID", referencedColumnName = "COMMENT_ID")
+    @JoinColumn(name = "PARENT_COMMENT_ID", referencedColumnName = "COMMENT_ID")
     private Comment parent;
 
 
