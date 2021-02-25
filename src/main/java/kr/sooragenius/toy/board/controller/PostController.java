@@ -5,8 +5,10 @@ import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.response.CommentResponseDTO;
 import kr.sooragenius.toy.board.dto.response.PostResponseDTO;
 import kr.sooragenius.toy.board.exception.InvalidPasswordException;
+import kr.sooragenius.toy.board.message.PostMessage;
 import kr.sooragenius.toy.board.service.CommentService;
 import kr.sooragenius.toy.board.service.PostService;
+import kr.sooragenius.toy.board.util.MutlipartFileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
@@ -29,6 +32,7 @@ import java.util.UUID;
 public class PostController {
     private final PostService postService;
     private final CommentService commentService;
+    private final PostMessage postMessage;
 
 
     @Value("${kr.sooragenius.toy.board.file_store_path}")
@@ -58,18 +62,10 @@ public class PostController {
                          List<MultipartFile> uploadFiles,
                          HttpServletRequest request
                          ) throws IOException {
-        List<PostFileRequestDTO.CreateDTO> files = new ArrayList<>();
-        if(uploadFiles != null && !uploadFiles.isEmpty()) {
-            for(MultipartFile file : uploadFiles) {
-                if(!file.isEmpty()) {
-                    String originalName = file.getOriginalFilename();
-                    String newFileName = UUID.randomUUID().toString();
-                    file.transferTo(new File(fileStorePath + "/" + newFileName));
-
-                    files.add(new PostFileRequestDTO.CreateDTO(originalName, newFileName));
-                }
-            }
-        }
+        List<PostFileRequestDTO.CreateDTO> files = MutlipartFileUtil.transferTo(fileStorePath, uploadFiles)
+                .stream()
+                .map(PostFileRequestDTO.CreateDTO::of)
+                .collect(Collectors.toList());
 
         createDTO.setFiles(files);
         PostResponseDTO.Create create = postService.addPost(createDTO, request.getRemoteHost(), "ADMIN");
@@ -82,7 +78,7 @@ public class PostController {
         try {
             postService.deleteById(deleteDTO);
         }catch(InvalidPasswordException ex) {
-            redirectAttributes.addFlashAttribute("message", PostService.INVALID_PASSWORD);
+            redirectAttributes.addFlashAttribute("message", postMessage.invalidPassword());
             return "redirect:/posts/" + deleteDTO.getPostId();
         }
         return "redirect:/posts/";

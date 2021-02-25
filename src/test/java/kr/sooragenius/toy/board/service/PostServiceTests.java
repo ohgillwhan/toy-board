@@ -2,6 +2,7 @@ package kr.sooragenius.toy.board.service;
 
 
 import kr.sooragenius.toy.board.config.EncryptConfiguration;
+import kr.sooragenius.toy.board.config.TestMessageConfiguration;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.domain.PostFile;
 import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
@@ -9,9 +10,9 @@ import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.response.PostFileResponseDTO;
 import kr.sooragenius.toy.board.dto.response.PostResponseDTO;
 import kr.sooragenius.toy.board.exception.InvalidPasswordException;
+import kr.sooragenius.toy.board.message.PostMessage;
 import kr.sooragenius.toy.board.repository.PostFileRepository;
 import kr.sooragenius.toy.board.repository.PostRepository;
-import org.assertj.core.api.ThrowableAssertAlternative;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,20 +40,26 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 @ExtendWith({MockitoExtension.class})
 @ExtendWith({SpringExtension.class})
-@Import(EncryptConfiguration.class)
+@Import({EncryptConfiguration.class,
+        TestMessageConfiguration.class,
+        PostMessage.class}
+)
 public class PostServiceTests {
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PostMessage postMessage;
 
     @Mock
     private PostRepository postRepository;
     @Mock
     private PostFileRepository postFileRepository;
+
     private PostService postService;
 
     @BeforeEach
     void setUp() {
-        postService = new PostService(passwordEncoder, postRepository, postFileRepository);
+        postService = new PostService(passwordEncoder, postRepository, postFileRepository, postMessage);
     }
 
     @Test
@@ -150,7 +157,7 @@ public class PostServiceTests {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> postService.findById(1L))
-                .withMessage(PostService.NOT_EXIST_POST);
+                .withMessage(postMessage.postNotExist());
     }
 
     @Test
@@ -212,6 +219,6 @@ public class PostServiceTests {
 
         assertThatExceptionOfType(InvalidPasswordException.class)
                 .isThrownBy(() -> postService.deleteById(deleteDTO))
-                .withMessage(postService.INVALID_PASSWORD);
+                .withMessage(postMessage.invalidPassword());
     }
 }

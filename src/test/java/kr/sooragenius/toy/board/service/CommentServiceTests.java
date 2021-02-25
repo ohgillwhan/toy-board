@@ -2,11 +2,14 @@ package kr.sooragenius.toy.board.service;
 
 
 import kr.sooragenius.toy.board.config.EncryptConfiguration;
+import kr.sooragenius.toy.board.config.TestMessageConfiguration;
 import kr.sooragenius.toy.board.domain.Comment;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.dto.request.CommentRequestDTO;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.response.CommentResponseDTO;
+import kr.sooragenius.toy.board.message.CommentMessage;
+import kr.sooragenius.toy.board.message.PostMessage;
 import kr.sooragenius.toy.board.repository.CommentRepository;
 import kr.sooragenius.toy.board.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +36,19 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@Import(EncryptConfiguration.class)
+@Import({EncryptConfiguration.class,
+        TestMessageConfiguration.class,
+        CommentMessage.class,
+        PostMessage.class
+})
 public class CommentServiceTests {
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CommentMessage commentMessage;
+    @Autowired
+    private PostMessage postMessage;
+
     @Mock
     private CommentRepository commentRepository;
     @Mock
@@ -45,7 +57,7 @@ public class CommentServiceTests {
 
     @BeforeEach
     public void setUp() {
-        commentService  = new CommentService(passwordEncoder, postRepository, commentRepository);
+        commentService  = new CommentService(passwordEncoder, postRepository, commentRepository, commentMessage, postMessage);
     }
 
     @Test
@@ -116,6 +128,6 @@ public class CommentServiceTests {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> commentService.addComment(createDTO))
-                .withMessage(CommentService.NOT_FOUND_POST_MESSAGE);
+                .withMessage(postMessage.postNotExist());
     }
 }

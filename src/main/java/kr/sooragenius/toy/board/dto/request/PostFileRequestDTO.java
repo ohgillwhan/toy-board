@@ -1,5 +1,7 @@
 package kr.sooragenius.toy.board.dto.request;
 
+import kr.sooragenius.toy.board.dto.FileStore;
+import kr.sooragenius.toy.board.dto.response.PostResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +17,13 @@ public class PostFileRequestDTO {
         private String originalName;
         @NotEmpty
         private String storedName;
+
+        public static CreateDTO of(FileStore fileStore) {
+            CreateDTO create = new CreateDTO();
+            create.originalName = fileStore.getOriginalName();
+            create.storedName = fileStore.getStoreName();
+
+            return create;
+        }
     }
 }

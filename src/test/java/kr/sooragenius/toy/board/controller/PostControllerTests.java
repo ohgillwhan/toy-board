@@ -1,11 +1,13 @@
 package kr.sooragenius.toy.board.controller;
 
 import com.google.gson.Gson;
+import kr.sooragenius.toy.board.config.TestMessageConfiguration;
 import kr.sooragenius.toy.board.domain.Post;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.response.CommentResponseDTO;
 import kr.sooragenius.toy.board.dto.response.PostResponseDTO;
 import kr.sooragenius.toy.board.exception.InvalidPasswordException;
+import kr.sooragenius.toy.board.message.PostMessage;
 import kr.sooragenius.toy.board.service.CommentService;
 import kr.sooragenius.toy.board.service.PostService;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +44,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PostController.class)
 @ExtendWith(MockitoExtension.class)
+@Import(
+        {TestMessageConfiguration.class,
+                PostMessage.class}
+)
 public class PostControllerTests {
     @Autowired
     private MockMvc mockMvc;

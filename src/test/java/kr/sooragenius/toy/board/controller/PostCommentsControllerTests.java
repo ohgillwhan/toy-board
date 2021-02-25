@@ -1,7 +1,9 @@
 package kr.sooragenius.toy.board.controller;
 
+import kr.sooragenius.toy.board.config.TestMessageConfiguration;
 import kr.sooragenius.toy.board.exception.InvalidPasswordException;
-import kr.sooragenius.toy.board.repository.PostRepository;
+import kr.sooragenius.toy.board.message.CommentMessage;
+import kr.sooragenius.toy.board.message.PostMessage;
 import kr.sooragenius.toy.board.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,10 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -23,9 +23,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CommentsController.class)
 @ExtendWith(MockitoExtension.class)
+@Import({
+        TestMessageConfiguration.class,
+        PostMessage.class,
+        CommentMessage.class
+})
 public class PostCommentsControllerTests {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private PostMessage postMessage;
+    @Autowired
+    private CommentMessage commentMessage;
 
     @MockBean
     private CommentService commentService;
@@ -35,7 +44,7 @@ public class PostCommentsControllerTests {
     public void 게시글이_없으면_리다이렉트() throws Exception {
         final Long postId = 1L;
         given(commentService.addComment(any()))
-                .willThrow(new IllegalArgumentException(CommentService.NOT_FOUND_POST_MESSAGE));
+                .willThrow(new IllegalArgumentException(postMessage.postNotExist()));
 
         mockMvc.perform(
                 post("/post-comments")
@@ -44,7 +53,7 @@ public class PostCommentsControllerTests {
                 .param("password", "qwe123")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attribute("message", CommentService.NOT_FOUND_POST_MESSAGE))
+                .andExpect(flash().attribute("message", postMessage.postNotExist()))
                 .andExpect(redirectedUrl("/posts"));
     }
 
@@ -70,14 +79,14 @@ public class PostCommentsControllerTests {
         final Long commentId = 100L;
         final Long postId = 1L;
         given(commentService.deleteById(any()))
-                .willThrow(new InvalidPasswordException(CommentService.INVALID_PASSWORD));
+                .willThrow(new InvalidPasswordException(commentMessage.invalidPassword()));
         mockMvc.perform(
                 delete("/post-comments/"+commentId)
                         .param("postId", String.valueOf(postId))
                         .param("password", "qwe123")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attribute("message", CommentService.INVALID_PASSWORD))
+                .andExpect(flash().attribute("message", commentMessage.invalidPassword()))
                 .andExpect(redirectedUrl("/posts/" + postId));
     }
 }

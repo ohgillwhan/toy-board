@@ -5,6 +5,7 @@ import kr.sooragenius.toy.board.domain.PostFile;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.response.PostResponseDTO;
 import kr.sooragenius.toy.board.exception.InvalidPasswordException;
+import kr.sooragenius.toy.board.message.PostMessage;
 import kr.sooragenius.toy.board.repository.PostFileRepository;
 import kr.sooragenius.toy.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    public static String NOT_EXIST_POST = "존재하지 않는 게시글입니다.";
-    public static String INVALID_PASSWORD = "비밀번호가 틀렸습니다.";
-
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
     private final PostFileRepository fileRepository;
+    private final PostMessage postMessage;
 
     public PostResponseDTO.Create addPost(PostRequestDTO.CreateDTO createDTO, String ip, String registerName) {
         createDTO.passwordEncode(passwordEncoder);
@@ -47,21 +46,21 @@ public class PostService {
     }
     @Transactional(readOnly = true)
     public PostResponseDTO.ViewDTO findById(long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_POST));
+        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(postMessage.postNotExist()));
         List<PostFile> files = fileRepository.findByPostId(id);
 
         return PostResponseDTO.ViewDTO.of(post, files);
     }
     @Transactional
     public void increaseHit(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_POST));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException(postMessage.postNotExist()));
         post.view();
     }
     @Transactional
     public void deleteById(PostRequestDTO.DeleteDTO deleteDTO) {
-        Post post = postRepository.findById(deleteDTO.getPostId()).orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_POST));
+        Post post = postRepository.findById(deleteDTO.getPostId()).orElseThrow(() -> new IllegalArgumentException(postMessage.postNotExist()));
         if(!passwordEncoder.matches(deleteDTO.getPassword(),post.getPassword())) {
-            throw new InvalidPasswordException(INVALID_PASSWORD);
+            throw new InvalidPasswordException(postMessage.invalidPassword());
         }
         postRepository.deleteById(deleteDTO.getPostId());
     }
