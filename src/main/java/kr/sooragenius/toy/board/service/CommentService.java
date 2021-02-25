@@ -10,8 +10,8 @@ import kr.sooragenius.toy.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,18 +36,7 @@ public class CommentService {
         return CommentResponseDTO.CreateDTO.of(save);
     }
 
-
-    private Comment createComment(CommentRequestDTO.CreateDTO createDTO) {
-        Post post = postRepository.findById(createDTO.getPostId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_POST_MESSAGE));
-        if(createDTO.hasParent()) {
-            Comment parentComment = commentRepository.findById(createDTO.getParentId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PARENT_COMMENT));
-            return Comment.create(createDTO, post, parentComment);
-        }
-
-        return Comment.create(createDTO, post);
-    }
-
-
+    @Transactional
     public Long deleteById(CommentRequestDTO.DeleteDTO createDTO) {
         final Long commentId = createDTO.getCommentId();
         final String password = createDTO.getPassword();
@@ -60,11 +49,23 @@ public class CommentService {
 
         return comment.getId();
     }
-
+    @Transactional(readOnly = true)
     public List<CommentResponseDTO.ViewDTO> findAllByPostId(Long id) {
         return commentRepository.findAllByPostId(id)
                 .stream()
                 .map(CommentResponseDTO.ViewDTO::of)
                 .collect(Collectors.toList());
     }
+
+
+    private Comment createComment(CommentRequestDTO.CreateDTO createDTO) {
+        Post post = postRepository.findById(createDTO.getPostId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_POST_MESSAGE));
+        if(createDTO.hasParent()) {
+            Comment parentComment = commentRepository.findById(createDTO.getParentId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PARENT_COMMENT));
+            return Comment.create(createDTO, post, parentComment);
+        }
+
+        return Comment.create(createDTO, post);
+    }
+
 }

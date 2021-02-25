@@ -5,8 +5,8 @@ import kr.sooragenius.toy.board.dto.response.PostFileResponseDTO;
 import kr.sooragenius.toy.board.repository.PostFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor

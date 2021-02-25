@@ -43,9 +43,6 @@ public class PostService {
     }
     @Transactional(readOnly = true)
     public List<PostResponseDTO.ListDTO> findListAll() {
-        // 애매하다.. 1:N 관계인데.. 단방향 매핑이다.
-        // 게시글 : 첨부파일인데
-        // 고유번호 제목 첨부파일 갯수를 뽑아와야하는데 어떻게 할까..
         return postRepository.findListAll();
     }
     @Transactional(readOnly = true)
