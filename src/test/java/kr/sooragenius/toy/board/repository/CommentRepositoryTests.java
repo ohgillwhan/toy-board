@@ -7,6 +7,7 @@ import kr.sooragenius.toy.board.dto.request.CommentRequestDTO;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,6 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,11 +44,7 @@ public class CommentRepositoryTests {
     private Post post;
     @BeforeEach
     void setUp() {
-        createDTO = PostRequestDTO.CreateDTO.builder()
-                .title("TTILE")
-                .contents("CONTENTS")
-                .password("PASSWORD")
-                .build();
+        createDTO = new PostRequestDTO.CreateDTO("TITLE", "CONTENTS", "PASSWORD", new ArrayList<>());
         post = Post.create(createDTO, "IP","NAME");
 
         commentRepository.deleteAll();
@@ -56,52 +54,50 @@ public class CommentRepositoryTests {
 
     @Test
     @Transactional
-    public void
-    댓글_등록() {
+    @DisplayName("댓글은 게시글 밑에 등록이 되어야 한다.")
+    public void 댓글은_게시글_밑에_등록이_되어야_한다() {
         // given
         Post savePost = postRepository.save(post);
         List<Comment> comments = Arrays.asList(
-                Comment.create(CommentRequestDTO.CreateDTO.builder().contents("Contents_1").password("Password_1").build(), savePost),
-                Comment.create(CommentRequestDTO.CreateDTO.builder().contents("Contents_2").password("Password_2").build(), savePost),
-                Comment.create(CommentRequestDTO.CreateDTO.builder().contents("Contents_3").password("Password_3").build(), savePost)
+                Comment.create(new CommentRequestDTO.CreateDTO(savePost.getId(), "CONTENTS_1", "PASSWORD_1"), savePost),
+                Comment.create(new CommentRequestDTO.CreateDTO(savePost.getId(), "CONTENTS_2", "PASSWORD_2"), savePost),
+                Comment.create(new CommentRequestDTO.CreateDTO(savePost.getId(), "CONTENTS_3", "PASSWORD_3"), savePost)
         );
         // when
-        for(Comment comment : comments) {
-            commentRepository.save(comment);
-        }
+        comments.stream().forEach(commentRepository::save);
 
         flushAndClear();
         // then
-        List<Comment> byPostId = commentRepository.findByPostId(savePost.getId());
-        assertThat(byPostId.size())
-                .isEqualTo(comments.size());
+        List<Comment> result = commentRepository.findByPostId(savePost.getId());
+
+        assertThat(result.size()).isEqualTo(comments.size());
     }
 
     @ParameterizedTest
     @Transactional
     @MethodSource("createCommentWithChildren")
-    public void 코멘트밑에_코멘트(Map.Entry<CommentRequestDTO.CreateDTO, List<CommentRequestDTO.CreateDTO>> entry) {
+    public void 코멘트_밑에는_코멘트가_등록이_가능하다(Map.Entry<CommentRequestDTO.CreateDTO, List<CommentRequestDTO.CreateDTO>> entry) {
         // given
         Post savePost = postRepository.save(post);
         Comment parent = Comment.create(entry.getKey(), savePost);
-        parent = commentRepository.save(parent);
+        final Comment savedParent = commentRepository.save(parent);
+
+        long parentId = savedParent.getId();
         // when
-        List<Comment> childList = new ArrayList<>();
-        for(CommentRequestDTO.CreateDTO childDTO : entry.getValue()) {
-            Comment child = Comment.create(childDTO, post, parent);
-            child = commentRepository.save(child);
-            childList.add(child);
-        }
+        entry.getValue()
+                .stream()
+                .map(item -> Comment.create(item, post, savedParent))
+                .forEach(commentRepository::save);
 
         flushAndClear();
         // then
-        List<Comment> children = commentRepository.findByParentIdWithoutSelf(parent.getId());
+        List<Comment> children = commentRepository.findByParentIdWithoutSelf(parentId);
 
         assertThat(children.size()).isEqualTo(entry.getValue().size());
-        log.info("=>" + parent.toString());
+        log.info("=>" + savedParent.toString());
         for(Comment child : children) {
             assertThat(child.getPost().getId()).isEqualTo(savePost.getId());
-            assertThat(child.getParent().getId()).isEqualTo(parent.getId());
+            assertThat(child.getParent().getId()).isEqualTo(parentId);
             log.info("====>" + child.toString());
         }
 

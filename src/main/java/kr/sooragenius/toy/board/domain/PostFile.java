@@ -28,9 +28,4 @@ public class PostFile {
 
         return postFile;
     }
-
-    public String getExtension() {
-        if(!originalName.contains(".")) return "";
-        return originalName.substring(originalName.lastIndexOf(".") + 1);
-    }
 }

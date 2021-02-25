@@ -36,6 +36,7 @@ public class PostResponseDTO {
         }
     }
     @Data
+    @AllArgsConstructor @NoArgsConstructor
     public static class ViewDTO {
         private Long postId;
         private String title;

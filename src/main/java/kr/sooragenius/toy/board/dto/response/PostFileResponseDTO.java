@@ -29,6 +29,7 @@ public class PostFileResponseDTO {
         }
     }
     @Data
+    @NoArgsConstructor @AllArgsConstructor
     public static class ViewDTO {
         private Long fileId;
         private String originalName;
@@ -45,6 +46,11 @@ public class PostFileResponseDTO {
 
         public String getOriginalNameForContentDisposition() throws UnsupportedEncodingException {
             return new String(originalName.getBytes(StandardCharsets.UTF_8), "ISO-8859-1");
+        }
+
+        public String getExtension() {
+            if(!originalName.contains(".")) return "";
+            return originalName.substring(originalName.lastIndexOf(".") + 1);
         }
     }
 }

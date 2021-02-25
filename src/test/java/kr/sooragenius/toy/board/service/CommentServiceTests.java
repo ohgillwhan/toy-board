@@ -10,6 +10,7 @@ import kr.sooragenius.toy.board.dto.response.CommentResponseDTO;
 import kr.sooragenius.toy.board.repository.CommentRepository;
 import kr.sooragenius.toy.board.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -48,17 +49,20 @@ public class CommentServiceTests {
     }
 
     @Test
+    @DisplayName("패스워드 인코더는 존재하고, BCrypt여야 한다.")
     public void 패스워드_인코더는_존재해야_하며_Bcrypt여야_한다() {
         assertThat(passwordEncoder).isNotNull();
         assertThat(passwordEncoder).isInstanceOf(BCryptPasswordEncoder.class);
     }
 
     @Test
+    @DisplayName("댓글은 암호화가 되어야 한다.")
     public void 코멘트는_암호화가_되어야_한다() {
         // given
         String originalPassword = "Password";
         Long postId = 1L;
-        CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, "contents", originalPassword);
+
+        CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(postId, "contents", originalPassword);
         given(postRepository.findById(postId)).willAnswer((item) -> {
             Post post = Post.create(PostRequestDTO.CreateDTO.builder().build(), "IP","NAME");
             ReflectionTestUtils.setField(post, "id", postId);
@@ -75,6 +79,7 @@ public class CommentServiceTests {
     }
 
     @Test
+    @DisplayName("댓글 밑에는 댓글이 등록이 가능하다.")
     public void 코멘트_밑에_코멘트() {
         // given
         Long postId = 1L;
@@ -105,9 +110,9 @@ public class CommentServiceTests {
     }
 
     @Test
+    @DisplayName("댓글을 등록할 때 게시글이 없으면은 에러가 발생해야 한다.")
     public void 게시글이_없으면은_에러가_발생해야_한다() {
-        String originalPassword = "Password";
-        CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, "contents", originalPassword);
+        CommentRequestDTO.CreateDTO createDTO = new CommentRequestDTO.CreateDTO(1L, "contents", "PASSWORD");
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> commentService.addComment(createDTO))

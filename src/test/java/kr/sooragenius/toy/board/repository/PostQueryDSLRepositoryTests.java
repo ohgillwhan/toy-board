@@ -38,11 +38,9 @@ public class PostQueryDSLRepositoryTests {
 
 
     @Test
-    @Disabled
     public void 게시글_리스트_카운트_테스트() {
         // given
         Map<Long, Long> postIdToFileSize = new HashMap<>();
-        final long postId = 1L;
         for(int i = 0; i<5; i++) {
             List<PostFileRequestDTO.CreateDTO> files = new ArrayList<>();
             for(int j = 0; j<i; j++) {
@@ -58,8 +56,7 @@ public class PostQueryDSLRepositoryTests {
             }
             postIdToFileSize.put(post.getId(), (long) files.size());
         }
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
         // when
         List<PostResponseDTO.ListDTO> listAll = postRepository.findListAll();
         // then
@@ -67,5 +64,10 @@ public class PostQueryDSLRepositoryTests {
             assertThat(postIdToFileSize.get(list.getPostId()))
                     .isEqualTo(list.getFileLength());
         }
+    }
+
+    private void flushAndClear() {
+        entityManager.flush();
+        entityManager.clear();
     }
 }

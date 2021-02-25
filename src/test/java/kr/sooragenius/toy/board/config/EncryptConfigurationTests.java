@@ -1,6 +1,7 @@
 package kr.sooragenius.toy.board.config;
 
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -17,7 +18,9 @@ public class EncryptConfigurationTests {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Test
+    @DisplayName("PasswordEncoder는 BCryptPasswordEncoder여야 한다.")
     public void 패스워드_인코더는_BCRPYT여야_한다() {
         assertThat(passwordEncoder)
                 .isInstanceOf(BCryptPasswordEncoder.class);

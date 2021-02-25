@@ -6,6 +6,7 @@ import kr.sooragenius.toy.board.domain.PostFile;
 import kr.sooragenius.toy.board.dto.request.PostRequestDTO;
 import kr.sooragenius.toy.board.dto.request.PostFileRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -49,6 +50,7 @@ public class PostFileRepositoryTests {
 
     @Test
     @Transactional
+    @DisplayName("첨부파일은 게시글 밑에 등록이 되어야 한다")
     public void 첨부파일_등록() {
         // given
         Post save = postRepository.save(post);

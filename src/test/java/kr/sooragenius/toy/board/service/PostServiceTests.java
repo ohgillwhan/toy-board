@@ -13,6 +13,7 @@ import kr.sooragenius.toy.board.repository.PostFileRepository;
 import kr.sooragenius.toy.board.repository.PostRepository;
 import org.assertj.core.api.ThrowableAssertAlternative;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -55,6 +56,7 @@ public class PostServiceTests {
     }
 
     @Test
+    @DisplayName("패스워드 인코더는 존재해야 하며, Bcrypt여야 한다.")
     public void 패스워드_인코더는_존재해야_하며_Bcrypt여야_한다() {
         assertThat(passwordEncoder).isNotNull();
         assertThat(passwordEncoder).isInstanceOf(BCryptPasswordEncoder.class);
@@ -63,6 +65,7 @@ public class PostServiceTests {
 
 
     @Test
+    @DisplayName("게시글을 추가하면 암호화가 되어야 한다.")
     public void 게시글_추가_암호화_확인() {
         // given
         String originalPassword = "Password";
@@ -79,6 +82,7 @@ public class PostServiceTests {
     }
 
     @Test
+    @DisplayName("게시글을 추가할 때 첨부파일도 등록이 되어야 한다.")
     public void 게시글_추가시_첨부파일도_같이() {
         // given
         final long postId = 1L;

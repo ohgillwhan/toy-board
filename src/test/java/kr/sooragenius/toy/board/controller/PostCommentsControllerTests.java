@@ -3,6 +3,7 @@ package kr.sooragenius.toy.board.controller;
 import kr.sooragenius.toy.board.exception.InvalidPasswordException;
 import kr.sooragenius.toy.board.repository.PostRepository;
 import kr.sooragenius.toy.board.service.CommentService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,6 +31,7 @@ public class PostCommentsControllerTests {
     private CommentService commentService;
 
     @Test
+    @DisplayName("댓글을 작성할 때 게시글이 없으면은 게시글 목록으로 리다이렉트 한다.")
     public void 게시글이_없으면_리다이렉트() throws Exception {
         final Long postId = 1L;
         given(commentService.addComment(any()))
@@ -47,6 +49,7 @@ public class PostCommentsControllerTests {
     }
 
     @Test
+    @DisplayName("댓글을 작성할 때 문제가 없을경우 게시글 상세보기로 이동해야 한다.")
     public void 모든_경우가_완벽할_경우() throws Exception {
         final Long postId = 1L;
 
@@ -62,15 +65,15 @@ public class PostCommentsControllerTests {
 
 
     @Test
+    @DisplayName("댓글을 삭제할 때 비밀번호가 틀린경우 에러메세지와 함께 게시글 상세보기로 이동해야 한다.")
     public void 삭제시_비밀번호가_틀릴경우() throws Exception {
         final Long commentId = 100L;
         final Long postId = 1L;
         given(commentService.deleteById(any()))
                 .willThrow(new InvalidPasswordException(CommentService.INVALID_PASSWORD));
         mockMvc.perform(
-                delete("/post-comments")
+                delete("/post-comments/"+commentId)
                         .param("postId", String.valueOf(postId))
-                        .param("commentId", String.valueOf(commentId))
                         .param("password", "qwe123")
         )
                 .andExpect(status().is3xxRedirection())
